@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -13,10 +14,10 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 180 100% 25.1% 0.6;
+    --primary: 202 43% 26%;
     --primary-foreground: 210 40% 98%;
 
-    --secondary: 180 70% 40% 0.7;
+    --secondary: 202 30% 40%;
     --secondary-foreground: 222.2 47.4% 11.2%;
 
     --muted: 210 40% 96.1%;
@@ -36,12 +37,12 @@
 
     --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 222.2 47.4% 11.2%;
-    --sidebar-primary: 180 100% 25.1% 0.6;
+    --sidebar-primary: 202 43% 26%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 210 40% 96.1%;
     --sidebar-accent-foreground: 222.2 47.4% 11.2%;
     --sidebar-border: 214.3 31.8% 91.4%;
-    --sidebar-ring: 180 70% 40% 0.7;
+    --sidebar-ring: 202 30% 40%;
   }
 
   .dark {
@@ -54,7 +55,7 @@
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 180 100% 25.1% 0.6;
+    --primary: 202 43% 26%;
     --primary-foreground: 222.2 47.4% 11.2%;
 
     --secondary: 217.2 32.6% 17.5%;
@@ -75,12 +76,12 @@
     
     --sidebar-background: 222.2 47.4% 11.2%;
     --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 180 100% 25.1% 0.6;
+    --sidebar-primary: 202 43% 26%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 217.2 32.6% 17.5%;
     --sidebar-accent-foreground: 210 40% 98%;
     --sidebar-border: 217.2 32.6% 17.5%;
-    --sidebar-ring: 180 70% 40% 0.7;
+    --sidebar-ring: 202 30% 40%;
   }
 }
 

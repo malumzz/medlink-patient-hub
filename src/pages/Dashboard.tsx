@@ -7,7 +7,7 @@ import { Progress } from "@/components/ui/progress";
 interface Stat {
   title: string;
   value: string;
-  icon: React.ComponentType<{ size?: number }>;
+  icon: React.ComponentType<any>;
   change: string;
   trend: "up" | "down";
 }

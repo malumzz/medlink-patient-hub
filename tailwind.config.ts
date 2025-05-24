@@ -64,13 +64,13 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				medical: {
-					DEFAULT: 'rgb(0 128 128 / 60%)', // Updated teal color
-					light: '#E3F6F6',
-					dark: '#006666',
-					accent: '#20B2AA', // Light sea green
-					success: '#66BB6A', // Green for success states
-					warning: '#FFA726', // Orange for warnings
-					danger: '#EF5350',  // Red for critical alerts
+					DEFAULT: '#274D60', // Updated to the new color
+					light: '#E8F1F5',
+					dark: '#1A3A4A',
+					accent: '#3A6B7D',
+					success: '#66BB6A',
+					warning: '#FFA726',
+					danger: '#EF5350',
 				}
 			},
 			borderRadius: {
