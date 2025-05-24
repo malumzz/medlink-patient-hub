@@ -4,9 +4,38 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Users, Calendar, FileText, Activity, ArrowUp, ArrowDown } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 
+interface Stat {
+  title: string;
+  value: string;
+  icon: React.ComponentType<{ size?: number }>;
+  change: string;
+  trend: "up" | "down";
+}
+
+interface ActivityItem {
+  patient: string;
+  action: string;
+  doctor: string;
+  time: string;
+}
+
+interface Appointment {
+  patient: string;
+  time: string;
+  type: string;
+  doctor: string;
+  status: string;
+}
+
+interface DepartmentWorkload {
+  department: string;
+  patients: number;
+  capacity: number;
+}
+
 const Dashboard = () => {
   // Mock data for stats
-  const stats = [
+  const stats: Stat[] = [
     {
       title: "Total Patients",
       value: "3,285",
@@ -38,7 +67,7 @@ const Dashboard = () => {
   ];
 
   // Mock data for recent activity
-  const recentActivity = [
+  const recentActivity: ActivityItem[] = [
     {
       patient: "Emma Wilson",
       action: "Appointment scheduled",
@@ -72,7 +101,7 @@ const Dashboard = () => {
   ];
 
   // Mock data for upcoming appointments
-  const upcomingAppointments = [
+  const upcomingAppointments: Appointment[] = [
     {
       patient: "Robert Lee",
       time: "10:00 AM",
@@ -97,7 +126,7 @@ const Dashboard = () => {
   ];
 
   // Mock data for department workload
-  const departmentWorkload = [
+  const departmentWorkload: DepartmentWorkload[] = [
     { department: "Cardiology", patients: 42, capacity: 60 },
     { department: "Neurology", patients: 38, capacity: 45 },
     { department: "Pediatrics", patients: 28, capacity: 50 },
