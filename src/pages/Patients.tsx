@@ -11,89 +11,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Search, Plus, Filter } from "lucide-react";
+import { Search, Plus, Filter, Loader2 } from "lucide-react";
+import { usePatients } from "@/hooks/usePatients";
 
 const Patients = () => {
   const [search, setSearch] = useState("");
-
-  // Mock patient data
-  const patients = [
-    {
-      id: "P001",
-      name: "Emma Wilson",
-      age: 35,
-      gender: "Female",
-      contact: "+1 (555) 123-4567",
-      email: "emma.w@example.com",
-      status: "Active",
-    },
-    {
-      id: "P002",
-      name: "John Miller",
-      age: 42,
-      gender: "Male",
-      contact: "+1 (555) 234-5678",
-      email: "john.m@example.com",
-      status: "Active",
-    },
-    {
-      id: "P003",
-      name: "Sophia Garcia",
-      age: 28,
-      gender: "Female",
-      contact: "+1 (555) 345-6789",
-      email: "sophia.g@example.com",
-      status: "Inactive",
-    },
-    {
-      id: "P004",
-      name: "Michael Chen",
-      age: 51,
-      gender: "Male",
-      contact: "+1 (555) 456-7890",
-      email: "michael.c@example.com",
-      status: "Active",
-    },
-    {
-      id: "P005",
-      name: "Olivia Brown",
-      age: 22,
-      gender: "Female",
-      contact: "+1 (555) 567-8901",
-      email: "olivia.b@example.com",
-      status: "Pending",
-    },
-    {
-      id: "P006",
-      name: "James Johnson",
-      age: 65,
-      gender: "Male",
-      contact: "+1 (555) 678-9012",
-      email: "james.j@example.com",
-      status: "Active",
-    },
-    {
-      id: "P007",
-      name: "Ava Martinez",
-      age: 31,
-      gender: "Female",
-      contact: "+1 (555) 789-0123",
-      email: "ava.m@example.com",
-      status: "Inactive",
-    },
-    {
-      id: "P008",
-      name: "William Taylor",
-      age: 47,
-      gender: "Male",
-      contact: "+1 (555) 890-1234",
-      email: "william.t@example.com",
-      status: "Active",
-    },
-  ];
+  const { data: patients, isLoading, error } = usePatients();
 
   // Filter patients based on search
-  const filteredPatients = search
+  const filteredPatients = patients && search
     ? patients.filter(
         (patient) =>
           patient.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -101,7 +27,20 @@ const Patients = () => {
           patient.contact.includes(search) ||
           patient.email.toLowerCase().includes(search.toLowerCase())
       )
-    : patients;
+    : patients || [];
+
+  if (error) {
+    return (
+      <div className="animate-fade-in">
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <p className="text-red-600 mb-2">Error loading patients</p>
+            <p className="text-muted-foreground">{error.message}</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="animate-fade-in">
@@ -130,47 +69,64 @@ const Patients = () => {
             </Button>
           </div>
 
+          {/* Loading state */}
+          {isLoading && (
+            <div className="flex items-center justify-center h-32">
+              <Loader2 className="h-6 w-6 animate-spin" />
+              <span className="ml-2">Loading patients...</span>
+            </div>
+          )}
+
           {/* Patients table */}
-          <div className="table-container overflow-auto">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>ID</TableHead>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Age</TableHead>
-                  <TableHead>Gender</TableHead>
-                  <TableHead>Contact</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Status</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredPatients.map((patient) => (
-                  <TableRow key={patient.id} className="cursor-pointer hover:bg-muted/50">
-                    <TableCell className="font-medium">{patient.id}</TableCell>
-                    <TableCell>{patient.name}</TableCell>
-                    <TableCell>{patient.age}</TableCell>
-                    <TableCell>{patient.gender}</TableCell>
-                    <TableCell>{patient.contact}</TableCell>
-                    <TableCell>{patient.email}</TableCell>
-                    <TableCell>
-                      <span
-                        className={
-                          patient.status === "Active"
-                            ? "status-active"
-                            : patient.status === "Inactive"
-                            ? "status-inactive"
-                            : "status-pending"
-                        }
-                      >
-                        {patient.status}
-                      </span>
-                    </TableCell>
+          {!isLoading && (
+            <div className="table-container overflow-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>ID</TableHead>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Age</TableHead>
+                    <TableHead>Gender</TableHead>
+                    <TableHead>Contact</TableHead>
+                    <TableHead>Email</TableHead>
+                    <TableHead>Status</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
+                </TableHeader>
+                <TableBody>
+                  {filteredPatients.map((patient) => (
+                    <TableRow key={patient.id} className="cursor-pointer hover:bg-muted/50">
+                      <TableCell className="font-medium">{patient.id}</TableCell>
+                      <TableCell>{patient.name}</TableCell>
+                      <TableCell>{patient.age}</TableCell>
+                      <TableCell>{patient.gender}</TableCell>
+                      <TableCell>{patient.contact}</TableCell>
+                      <TableCell>{patient.email}</TableCell>
+                      <TableCell>
+                        <span
+                          className={
+                            patient.status === "Active"
+                              ? "status-active"
+                              : patient.status === "Inactive"
+                              ? "status-inactive"
+                              : "status-pending"
+                          }
+                        >
+                          {patient.status}
+                        </span>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                  {filteredPatients.length === 0 && !isLoading && (
+                    <TableRow>
+                      <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
+                        No patients found
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
