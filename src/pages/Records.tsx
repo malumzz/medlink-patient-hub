@@ -10,36 +10,90 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FileText, Download, Share2, Search, Filter, Upload, Loader2 } from "lucide-react";
-import { useMedicalRecords } from "@/hooks/useMedicalRecords";
+import { FileText, Download, Share2, Search, Filter, Upload } from "lucide-react";
 
 const Records = () => {
   const [activeTab, setActiveTab] = useState("all");
-  const { data: records, isLoading, error } = useMedicalRecords();
+
+  // Mock records data
+  const records = [
+    {
+      id: "REC001",
+      patientName: "Emma Wilson",
+      patientId: "P001",
+      recordType: "Lab Results",
+      department: "Cardiology",
+      date: "2023-05-15",
+      doctor: "Dr. Sarah Johnson",
+      status: "Completed",
+      fileSize: "2.4 MB",
+    },
+    {
+      id: "REC002",
+      patientName: "John Miller",
+      patientId: "P002",
+      recordType: "MRI Scan",
+      department: "Neurology",
+      date: "2023-05-10",
+      doctor: "Dr. David Wilson",
+      status: "Pending Review",
+      fileSize: "15.7 MB",
+    },
+    {
+      id: "REC003",
+      patientName: "Sophia Garcia",
+      patientId: "P003",
+      recordType: "Prescription",
+      department: "General Medicine",
+      date: "2023-05-08",
+      doctor: "Dr. Michael Brown",
+      status: "Completed",
+      fileSize: "0.5 MB",
+    },
+    {
+      id: "REC004",
+      patientName: "Michael Chen",
+      patientId: "P004",
+      recordType: "X-Ray",
+      department: "Orthopedics",
+      date: "2023-05-05",
+      doctor: "Dr. Jessica Martinez",
+      status: "Completed",
+      fileSize: "3.2 MB",
+    },
+    {
+      id: "REC005",
+      patientName: "Olivia Brown",
+      patientId: "P005",
+      recordType: "Blood Test",
+      department: "Hematology",
+      date: "2023-05-03",
+      doctor: "Dr. Emily Davis",
+      status: "Pending Results",
+      fileSize: "1.1 MB",
+    },
+    {
+      id: "REC006",
+      patientName: "James Johnson",
+      patientId: "P006",
+      recordType: "ECG",
+      department: "Cardiology",
+      date: "2023-05-01",
+      doctor: "Dr. Sarah Johnson",
+      status: "Completed",
+      fileSize: "1.8 MB",
+    },
+  ];
 
   // Filter records based on active tab
-  const filteredRecords = records ? 
+  const filteredRecords = 
     activeTab === "all" 
       ? records 
       : records.filter(record => {
           if (activeTab === "pending") return record.status.includes("Pending");
           if (activeTab === "completed") return record.status === "Completed";
           return true;
-        })
-    : [];
-
-  if (error) {
-    return (
-      <div className="animate-fade-in">
-        <div className="flex items-center justify-center h-64">
-          <div className="text-center">
-            <p className="text-red-600 mb-2">Error loading medical records</p>
-            <p className="text-muted-foreground">{error.message}</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
+        });
 
   return (
     <div className="animate-fade-in">
@@ -84,84 +138,74 @@ const Records = () => {
             </Button>
           </div>
 
-          {/* Loading state */}
-          {isLoading && (
-            <div className="flex items-center justify-center h-32">
-              <Loader2 className="h-6 w-6 animate-spin" />
-              <span className="ml-2">Loading medical records...</span>
-            </div>
-          )}
-
           {/* Records list */}
-          {!isLoading && (
-            <div className="overflow-auto rounded-md border">
-              <div className="min-w-[800px]">
-                {/* Table header */}
-                <div className="grid grid-cols-12 border-b bg-muted/50 px-4 py-3 text-sm font-medium">
-                  <div className="col-span-3">Patient / Record</div>
-                  <div className="col-span-2">Department</div>
-                  <div className="col-span-2">Doctor</div>
-                  <div className="col-span-2">Date</div>
-                  <div className="col-span-2">Status</div>
-                  <div className="col-span-1 text-right">Actions</div>
-                </div>
+          <div className="overflow-auto rounded-md border">
+            <div className="min-w-[800px]">
+              {/* Table header */}
+              <div className="grid grid-cols-12 border-b bg-muted/50 px-4 py-3 text-sm font-medium">
+                <div className="col-span-3">Patient / Record</div>
+                <div className="col-span-2">Department</div>
+                <div className="col-span-2">Doctor</div>
+                <div className="col-span-2">Date</div>
+                <div className="col-span-2">Status</div>
+                <div className="col-span-1 text-right">Actions</div>
+              </div>
 
-                {/* Records */}
-                {filteredRecords.map((record) => (
-                  <div
-                    key={record.id}
-                    className="grid grid-cols-12 border-b px-4 py-4 hover:bg-muted/30"
-                  >
-                    <div className="col-span-3">
-                      <div className="flex items-start">
-                        <div className="mr-3 rounded-md bg-medical/10 p-2 text-medical">
-                          <FileText className="h-5 w-5" />
-                        </div>
-                        <div>
-                          <p className="font-medium">{record.patientName}</p>
-                          <p className="text-xs text-muted-foreground">
-                            {record.recordType} ({record.fileSize})
-                          </p>
-                          <p className="text-xs text-muted-foreground">ID: {record.patientId}</p>
-                        </div>
+              {/* Records */}
+              {filteredRecords.map((record) => (
+                <div
+                  key={record.id}
+                  className="grid grid-cols-12 border-b px-4 py-4 hover:bg-muted/30"
+                >
+                  <div className="col-span-3">
+                    <div className="flex items-start">
+                      <div className="mr-3 rounded-md bg-medical/10 p-2 text-medical">
+                        <FileText className="h-5 w-5" />
+                      </div>
+                      <div>
+                        <p className="font-medium">{record.patientName}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {record.recordType} ({record.fileSize})
+                        </p>
+                        <p className="text-xs text-muted-foreground">ID: {record.patientId}</p>
                       </div>
                     </div>
-
-                    <div className="col-span-2 flex items-center">{record.department}</div>
-                    <div className="col-span-2 flex items-center">{record.doctor}</div>
-                    <div className="col-span-2 flex items-center">{record.date}</div>
-
-                    <div className="col-span-2 flex items-center">
-                      <span
-                        className={
-                          record.status === "Completed"
-                            ? "status-active"
-                            : "status-pending"
-                        }
-                      >
-                        {record.status}
-                      </span>
-                    </div>
-
-                    <div className="col-span-1 flex items-center justify-end">
-                      <Button variant="ghost" size="icon">
-                        <Download className="h-4 w-4" />
-                      </Button>
-                      <Button variant="ghost" size="icon">
-                        <Share2 className="h-4 w-4" />
-                      </Button>
-                    </div>
                   </div>
-                ))}
 
-                {filteredRecords.length === 0 && !isLoading && (
-                  <div className="py-8 text-center text-muted-foreground">
-                    No records found matching the current filters
+                  <div className="col-span-2 flex items-center">{record.department}</div>
+                  <div className="col-span-2 flex items-center">{record.doctor}</div>
+                  <div className="col-span-2 flex items-center">{record.date}</div>
+
+                  <div className="col-span-2 flex items-center">
+                    <span
+                      className={
+                        record.status === "Completed"
+                          ? "status-active"
+                          : "status-pending"
+                      }
+                    >
+                      {record.status}
+                    </span>
                   </div>
-                )}
-              </div>
+
+                  <div className="col-span-1 flex items-center justify-end">
+                    <Button variant="ghost" size="icon">
+                      <Download className="h-4 w-4" />
+                    </Button>
+                    <Button variant="ghost" size="icon">
+                      <Share2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              ))}
+
+              {filteredRecords.length === 0 && (
+                <div className="py-8 text-center text-muted-foreground">
+                  No records found matching the current filters
+                </div>
+              )}
             </div>
-          )}
+          </div>
         </CardContent>
       </Card>
     </div>

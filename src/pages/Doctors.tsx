@@ -3,24 +3,66 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
-import { Search, Plus, Loader2 } from "lucide-react";
-import { useDoctors } from "@/hooks/useDoctors";
+import { Search, Plus } from "lucide-react";
 
 const Doctors = () => {
-  const { data: doctors, isLoading, error } = useDoctors();
-
-  if (error) {
-    return (
-      <div className="animate-fade-in">
-        <div className="flex items-center justify-center h-64">
-          <div className="text-center">
-            <p className="text-red-600 mb-2">Error loading doctors</p>
-            <p className="text-muted-foreground">{error.message}</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  // Mock doctors data
+  const doctors = [
+    {
+      id: "DR001",
+      name: "Dr. Sarah Johnson",
+      specialty: "Cardiology",
+      experience: "15 years",
+      contact: "+1 (555) 123-4567",
+      email: "sarah.johnson@example.com",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah",
+    },
+    {
+      id: "DR002",
+      name: "Dr. David Wilson",
+      specialty: "Neurology",
+      experience: "12 years",
+      contact: "+1 (555) 234-5678",
+      email: "david.wilson@example.com",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=David",
+    },
+    {
+      id: "DR003",
+      name: "Dr. Emily Davis",
+      specialty: "Pediatrics",
+      experience: "8 years",
+      contact: "+1 (555) 345-6789",
+      email: "emily.davis@example.com",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Emily",
+    },
+    {
+      id: "DR004",
+      name: "Dr. Michael Brown",
+      specialty: "Orthopedics",
+      experience: "20 years",
+      contact: "+1 (555) 456-7890",
+      email: "michael.brown@example.com",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Michael",
+    },
+    {
+      id: "DR005",
+      name: "Dr. Jessica Martinez",
+      specialty: "Dermatology",
+      experience: "10 years",
+      contact: "+1 (555) 567-8901",
+      email: "jessica.martinez@example.com",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Jessica",
+    },
+    {
+      id: "DR006",
+      name: "Dr. Robert Lee",
+      specialty: "Ophthalmology",
+      experience: "14 years",
+      contact: "+1 (555) 678-9012",
+      email: "robert.lee@example.com",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Robert",
+    },
+  ];
 
   return (
     <div className="animate-fade-in">
@@ -37,64 +79,48 @@ const Doctors = () => {
         <Input placeholder="Search doctors by name, specialty..." className="pl-9" />
       </div>
 
-      {/* Loading state */}
-      {isLoading && (
-        <div className="flex items-center justify-center h-32">
-          <Loader2 className="h-6 w-6 animate-spin" />
-          <span className="ml-2">Loading doctors...</span>
-        </div>
-      )}
-
       {/* Doctors grid */}
-      {!isLoading && (
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {doctors?.map((doctor) => (
-            <Card key={doctor.id} className="card-hover overflow-hidden">
-              <CardContent className="p-0">
-                <div className="bg-medical p-4 text-white">
-                  <div className="flex items-center justify-between">
-                    <h3 className="font-bold">{doctor.name}</h3>
-                    <span className="rounded-full bg-white/20 px-2 py-1 text-xs">{doctor.id}</span>
-                  </div>
-                  <p className="text-sm text-white/80">{doctor.specialty}</p>
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {doctors.map((doctor) => (
+          <Card key={doctor.id} className="card-hover overflow-hidden">
+            <CardContent className="p-0">
+              <div className="bg-medical p-4 text-white">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-bold">{doctor.name}</h3>
+                  <span className="rounded-full bg-white/20 px-2 py-1 text-xs">{doctor.id}</span>
                 </div>
-                <div className="p-4">
-                  <div className="flex items-center">
-                    <div className="mr-4 flex h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-gray-100">
-                      <img src={doctor.avatar} alt={doctor.name} className="h-full w-full object-cover" />
-                    </div>
-                    <div>
-                      <p className="text-sm">
-                        <span className="text-muted-foreground">Experience:</span> {doctor.experience}
-                      </p>
-                      <p className="text-sm">
-                        <span className="text-muted-foreground">Contact:</span> {doctor.contact}
-                      </p>
-                    </div>
+                <p className="text-sm text-white/80">{doctor.specialty}</p>
+              </div>
+              <div className="p-4">
+                <div className="flex items-center">
+                  <div className="mr-4 flex h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-gray-100">
+                    <img src={doctor.avatar} alt={doctor.name} className="h-full w-full object-cover" />
                   </div>
-                  <p className="mt-3 text-sm">
-                    <span className="text-muted-foreground">Email:</span> {doctor.email}
-                  </p>
-                  <div className="mt-4 flex gap-2">
-                    <Button variant="outline" size="sm" className="flex-1">
-                      Profile
-                    </Button>
-                    <Button size="sm" className="flex-1 bg-medical hover:bg-medical-dark">
-                      Schedule
-                    </Button>
+                  <div>
+                    <p className="text-sm">
+                      <span className="text-muted-foreground">Experience:</span> {doctor.experience}
+                    </p>
+                    <p className="text-sm">
+                      <span className="text-muted-foreground">Contact:</span> {doctor.contact}
+                    </p>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-          )) || []}
-          
-          {doctors?.length === 0 && !isLoading && (
-            <div className="col-span-full text-center py-8 text-muted-foreground">
-              No doctors found
-            </div>
-          )}
-        </div>
-      )}
+                <p className="mt-3 text-sm">
+                  <span className="text-muted-foreground">Email:</span> {doctor.email}
+                </p>
+                <div className="mt-4 flex gap-2">
+                  <Button variant="outline" size="sm" className="flex-1">
+                    Profile
+                  </Button>
+                  <Button size="sm" className="flex-1 bg-medical hover:bg-medical-dark">
+                    Schedule
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
     </div>
   );
 };
