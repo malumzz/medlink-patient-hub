@@ -26,9 +26,9 @@
     --ring: 221.2 83.2% 53.3%;
     --radius: 0.5rem;
     
-    /* Medical theme colors */
-    --medical: 221.2 83.2% 53.3%;
-    --medical-dark: 221.2 83.2% 45%;
+    /* Medical theme colors - Updated to #274D60 */
+    --medical: 203 49% 26%;
+    --medical-dark: 203 49% 22%;
     --medical-success: 142.1 76.2% 36.3%;
     --medical-danger: 0 84.2% 60.2%;
   }
