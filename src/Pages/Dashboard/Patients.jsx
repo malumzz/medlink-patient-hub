@@ -1,7 +1,11 @@
 
 import React, { useState } from "react";
 import { Search, Plus, Filter } from "lucide-react";
-import { cn } from "@/lib/utils";
+
+// Inline utility function
+const cn = (...classes) => {
+  return classes.filter(Boolean).join(' ');
+};
 
 // Inline UI Components
 const Button = ({ className, variant = "default", size = "default", ...props }) => {
@@ -160,9 +164,59 @@ const Patients = () => {
 
   return (
     <div className="animate-fade-in">
+      {/* Inline styles for this component */}
+      <style jsx>{`
+        .animate-fade-in {
+          animation: fade-in 0.3s ease-in-out;
+        }
+        
+        @keyframes fade-in {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        
+        .status-active {
+          display: inline-flex;
+          align-items: center;
+          border-radius: 9999px;
+          padding: 0.25rem 0.5rem;
+          font-size: 0.75rem;
+          font-weight: 500;
+          background-color: #dcfce7;
+          color: #166534;
+        }
+        
+        .status-inactive {
+          display: inline-flex;
+          align-items: center;
+          border-radius: 9999px;
+          padding: 0.25rem 0.5rem;
+          font-size: 0.75rem;
+          font-weight: 500;
+          background-color: #fee2e2;
+          color: #991b1b;
+        }
+        
+        .status-pending {
+          display: inline-flex;
+          align-items: center;
+          border-radius: 9999px;
+          padding: 0.25rem 0.5rem;
+          font-size: 0.75rem;
+          font-weight: 500;
+          background-color: #fef3c7;
+          color: #92400e;
+        }
+        
+        .table-container {
+          border-radius: 0.5rem;
+          border: 1px solid hsl(var(--border));
+        }
+      `}</style>
+
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-3xl font-bold">Patients</h1>
-        <Button className="bg-medical hover:bg-medical-dark">
+        <Button className="bg-[#274D60] hover:bg-[#1A3A4A] text-white">
           <Plus className="mr-2 h-4 w-4" /> Add Patient
         </Button>
       </div>

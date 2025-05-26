@@ -1,7 +1,11 @@
 
 import React, { useState } from "react";
 import { FileText, Download, Share2, Search, Filter, Upload } from "lucide-react";
-import { cn } from "@/lib/utils";
+
+// Inline utility function
+const cn = (...classes) => {
+  return classes.filter(Boolean).join(' ');
+};
 
 // Inline UI Components
 const Button = ({ className, variant = "default", size = "default", ...props }) => {
@@ -167,13 +171,47 @@ const Records = () => {
 
   return (
     <div className="animate-fade-in">
+      {/* Inline styles for this component */}
+      <style jsx>{`
+        .animate-fade-in {
+          animation: fade-in 0.3s ease-in-out;
+        }
+        
+        @keyframes fade-in {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        
+        .status-active {
+          display: inline-flex;
+          align-items: center;
+          border-radius: 9999px;
+          padding: 0.25rem 0.5rem;
+          font-size: 0.75rem;
+          font-weight: 500;
+          background-color: #dcfce7;
+          color: #166534;
+        }
+        
+        .status-pending {
+          display: inline-flex;
+          align-items: center;
+          border-radius: 9999px;
+          padding: 0.25rem 0.5rem;
+          font-size: 0.75rem;
+          font-weight: 500;
+          background-color: #fef3c7;
+          color: #92400e;
+        }
+      `}</style>
+
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-3xl font-bold">Medical Records</h1>
         <div className="flex gap-2">
           <Button variant="outline" className="flex items-center gap-2">
             <Upload className="h-4 w-4" /> Upload Records
           </Button>
-          <Button className="bg-medical hover:bg-medical-dark">
+          <Button className="bg-[#274D60] hover:bg-[#1A3A4A] text-white">
             <FileText className="mr-2 h-4 w-4" /> New Record
           </Button>
         </div>
@@ -247,7 +285,7 @@ const Records = () => {
                 >
                   <div className="col-span-3">
                     <div className="flex items-start">
-                      <div className="mr-3 rounded-md bg-medical/10 p-2 text-medical">
+                      <div className="mr-3 rounded-md bg-[#274D60]/10 p-2 text-[#274D60]">
                         <FileText className="h-5 w-5" />
                       </div>
                       <div>

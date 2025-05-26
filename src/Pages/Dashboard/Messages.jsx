@@ -1,7 +1,11 @@
 
 import React, { useState } from "react";
 import { Search, Send, PaperclipIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
+
+// Inline utility function
+const cn = (...classes) => {
+  return classes.filter(Boolean).join(' ');
+};
 
 // Inline UI Components
 const Button = ({ className, variant = "default", size = "default", ...props }) => {
@@ -181,6 +185,18 @@ const Messages = () => {
 
   return (
     <div className="animate-fade-in">
+      {/* Inline styles for this component */}
+      <style jsx>{`
+        .animate-fade-in {
+          animation: fade-in 0.3s ease-in-out;
+        }
+        
+        @keyframes fade-in {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+      `}</style>
+
       <h1 className="mb-6 text-3xl font-bold">Messages</h1>
 
       <div className="grid h-[75vh] grid-cols-1 gap-6 lg:grid-cols-3">
@@ -208,7 +224,7 @@ const Messages = () => {
                       <AvatarFallback>{chat.name.substring(0, 2)}</AvatarFallback>
                     </Avatar>
                     {chat.online && (
-                      <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-medical-success ring-2 ring-white" />
+                      <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-green-500 ring-2 ring-white" />
                     )}
                   </div>
                   <div className="ml-3 flex-1">
@@ -220,7 +236,7 @@ const Messages = () => {
                     <p className="mt-1 truncate text-sm">{chat.lastMessage}</p>
                   </div>
                   {chat.unread > 0 && (
-                    <div className="ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-medical text-xs text-white">
+                    <div className="ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-[#274D60] text-xs text-white">
                       {chat.unread}
                     </div>
                   )}
@@ -243,7 +259,7 @@ const Messages = () => {
                       <AvatarFallback>{selectedConversation.name.substring(0, 2)}</AvatarFallback>
                     </Avatar>
                     {selectedConversation.online && (
-                      <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-medical-success ring-2 ring-white" />
+                      <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-green-500 ring-2 ring-white" />
                     )}
                   </div>
                   <div className="ml-3">
@@ -272,7 +288,7 @@ const Messages = () => {
                         <div
                           className={`max-w-[70%] rounded-lg p-3 ${
                             msg.sender === currentUser.id
-                              ? "bg-medical text-white"
+                              ? "bg-[#274D60] text-white"
                               : "bg-muted"
                           }`}
                         >
@@ -314,7 +330,7 @@ const Messages = () => {
                       className="flex-1"
                     />
                     <Button
-                      className="ml-2 bg-medical hover:bg-medical-dark"
+                      className="ml-2 bg-[#274D60] hover:bg-[#1A3A4A] text-white"
                       size="icon"
                       onClick={handleSendMessage}
                       disabled={!message.trim()}

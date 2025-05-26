@@ -1,7 +1,11 @@
 
 import React from "react";
 import { Search, Plus } from "lucide-react";
-import { cn } from "@/lib/utils";
+
+// Inline utility function
+const cn = (...classes) => {
+  return classes.filter(Boolean).join(' ');
+};
 
 // Inline UI Components
 const Button = ({ className, variant = "default", size = "default", ...props }) => {
@@ -103,9 +107,30 @@ const Doctors = () => {
 
   return (
     <div className="animate-fade-in">
+      {/* Inline styles for this component */}
+      <style jsx>{`
+        .animate-fade-in {
+          animation: fade-in 0.3s ease-in-out;
+        }
+        
+        @keyframes fade-in {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        
+        .card-hover {
+          transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        
+        .card-hover:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+      `}</style>
+
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-3xl font-bold">Doctors</h1>
-        <Button className="bg-medical hover:bg-medical-dark">
+        <Button className="bg-[#274D60] hover:bg-[#1A3A4A] text-white">
           <Plus className="mr-2 h-4 w-4" /> Add Doctor
         </Button>
       </div>
@@ -121,7 +146,7 @@ const Doctors = () => {
         {doctors.map((doctor) => (
           <Card key={doctor.id} className="card-hover overflow-hidden">
             <CardContent className="p-0">
-              <div className="bg-medical p-4 text-white">
+              <div className="bg-[#274D60] p-4 text-white">
                 <div className="flex items-center justify-between">
                   <h3 className="font-bold">{doctor.name}</h3>
                   <span className="rounded-full bg-white/20 px-2 py-1 text-xs">{doctor.id}</span>
@@ -149,7 +174,7 @@ const Doctors = () => {
                   <Button variant="outline" size="sm" className="flex-1">
                     Profile
                   </Button>
-                  <Button size="sm" className="flex-1 bg-medical hover:bg-medical-dark">
+                  <Button size="sm" className="flex-1 bg-[#274D60] hover:bg-[#1A3A4A] text-white">
                     Schedule
                   </Button>
                 </div>
