@@ -7,7 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Search, Send, PaperclipIcon } from "lucide-react";
 
 const Messages = () => {
-  const [selectedChat, setSelectedChat] = useState<string | null>("DR001");
+  const [selectedChat, setSelectedChat] = useState("DR001");
   const [message, setMessage] = useState("");
 
   // Mock user data (active user)
@@ -177,8 +177,8 @@ const Messages = () => {
   };
 
   // Get messages for selected chat
-  const getMessages = (chatId: string) => {
-    return mockMessages[chatId as keyof typeof mockMessages] || [];
+  const getMessages = (chatId) => {
+    return mockMessages[chatId] || [];
   };
 
   const handleSendMessage = () => {
