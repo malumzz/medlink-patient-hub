@@ -1,6 +1,6 @@
 
 import React, { useState } from "react";
-import { FileText, Download, Share2, Search, Filter, Upload } from "lucide-react";
+import { Search, Plus, Download, Filter, FileText, Calendar, User } from "lucide-react";
 
 // Inline utility function
 const cn = (...classes) => {
@@ -13,13 +13,11 @@ const Button = ({ className, variant = "default", size = "default", ...props }) 
   const variants = {
     default: "bg-primary text-primary-foreground hover:bg-primary/90",
     outline: "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
-    ghost: "hover:bg-accent hover:text-accent-foreground",
   };
   const sizes = {
     default: "h-10 px-4 py-2",
     sm: "h-9 rounded-md px-3",
     lg: "h-11 rounded-md px-8",
-    icon: "h-10 w-10",
   };
   
   return (
@@ -48,130 +46,120 @@ const CardContent = ({ className, ...props }) => (
   <div className={cn("p-6", className)} {...props} />
 );
 
-const CardHeader = ({ className, ...props }) => (
-  <div className={cn("flex flex-col space-y-1.5 p-6", className)} {...props} />
-);
-
-const CardTitle = ({ className, ...props }) => (
-  <h3 className={cn("text-2xl font-semibold leading-none tracking-tight", className)} {...props} />
-);
-
-const CardDescription = ({ className, ...props }) => (
-  <p className={cn("text-sm text-muted-foreground", className)} {...props} />
-);
-
-const Tabs = ({ children, value, onValueChange }) => (
-  <div data-value={value} data-onvaluechange={onValueChange}>
-    {children}
-  </div>
-);
-
-const TabsList = ({ className, children, ...props }) => (
-  <div className={cn("inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground", className)} {...props}>
-    {children}
-  </div>
-);
-
-const TabsTrigger = ({ className, value, children, onClick, isActive, ...props }) => (
-  <button
-    className={cn(
-      "inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
-      isActive ? "bg-background text-foreground shadow-sm" : "",
-      className
-    )}
-    onClick={() => onClick(value)}
-    {...props}
-  >
-    {children}
-  </button>
-);
-
 const Records = () => {
-  const [activeTab, setActiveTab] = useState("all");
+  const [search, setSearch] = useState("");
+  const [selectedFilter, setSelectedFilter] = useState("all");
 
-  // Mock records data
+  // Mock medical records data
   const records = [
     {
-      id: "REC001",
+      id: "MR001",
       patientName: "Emma Wilson",
       patientId: "P001",
-      recordType: "Lab Results",
-      department: "Cardiology",
-      date: "2023-05-15",
+      type: "Lab Report",
+      date: "2024-01-15",
       doctor: "Dr. Sarah Johnson",
       status: "Completed",
-      fileSize: "2.4 MB",
+      description: "Blood work analysis - Complete blood count",
     },
     {
-      id: "REC002",
+      id: "MR002",
       patientName: "John Miller",
       patientId: "P002",
-      recordType: "MRI Scan",
-      department: "Neurology",
-      date: "2023-05-10",
-      doctor: "Dr. David Wilson",
-      status: "Pending Review",
-      fileSize: "15.7 MB",
-    },
-    {
-      id: "REC003",
-      patientName: "Sophia Garcia",
-      patientId: "P003",
-      recordType: "Prescription",
-      department: "General Medicine",
-      date: "2023-05-08",
+      type: "X-Ray",
+      date: "2024-01-14",
       doctor: "Dr. Michael Brown",
       status: "Completed",
-      fileSize: "0.5 MB",
+      description: "Chest X-ray examination",
     },
     {
-      id: "REC004",
+      id: "MR003",
+      patientName: "Sophia Garcia",
+      patientId: "P003",
+      type: "Prescription",
+      date: "2024-01-13",
+      doctor: "Dr. Emily Davis",
+      status: "Active",
+      description: "Antibiotic prescription for respiratory infection",
+    },
+    {
+      id: "MR004",
       patientName: "Michael Chen",
       patientId: "P004",
-      recordType: "X-Ray",
-      department: "Orthopedics",
-      date: "2023-05-05",
-      doctor: "Dr. Jessica Martinez",
+      type: "Consultation",
+      date: "2024-01-12",
+      doctor: "Dr. David Wilson",
       status: "Completed",
-      fileSize: "3.2 MB",
+      description: "Cardiology consultation and ECG",
     },
     {
-      id: "REC005",
+      id: "MR005",
       patientName: "Olivia Brown",
       patientId: "P005",
-      recordType: "Blood Test",
-      department: "Hematology",
-      date: "2023-05-03",
-      doctor: "Dr. Emily Davis",
-      status: "Pending Results",
-      fileSize: "1.1 MB",
+      type: "MRI Scan",
+      date: "2024-01-11",
+      doctor: "Dr. Jessica Martinez",
+      status: "Pending",
+      description: "Brain MRI scan for headache evaluation",
     },
     {
-      id: "REC006",
+      id: "MR006",
       patientName: "James Johnson",
       patientId: "P006",
-      recordType: "ECG",
-      department: "Cardiology",
-      date: "2023-05-01",
-      doctor: "Dr. Sarah Johnson",
+      type: "Lab Report",
+      date: "2024-01-10",
+      doctor: "Dr. Robert Lee",
       status: "Completed",
-      fileSize: "1.8 MB",
+      description: "Diabetes monitoring - HbA1c test",
     },
   ];
 
-  // Filter records based on active tab
-  const filteredRecords = 
-    activeTab === "all" 
-      ? records 
-      : records.filter(record => {
-          if (activeTab === "pending") return record.status.includes("Pending");
-          if (activeTab === "completed") return record.status === "Completed";
-          return true;
-        });
+  // Filter records based on search and selected filter
+  const filteredRecords = records.filter((record) => {
+    const matchesSearch = search === "" || 
+      record.patientName.toLowerCase().includes(search.toLowerCase()) ||
+      record.id.toLowerCase().includes(search.toLowerCase()) ||
+      record.type.toLowerCase().includes(search.toLowerCase()) ||
+      record.doctor.toLowerCase().includes(search.toLowerCase());
+    
+    const matchesFilter = selectedFilter === "all" || 
+      record.status.toLowerCase() === selectedFilter.toLowerCase();
+    
+    return matchesSearch && matchesFilter;
+  });
+
+  const getStatusColor = (status) => {
+    switch (status.toLowerCase()) {
+      case "completed":
+        return "status-completed";
+      case "active":
+        return "status-active";
+      case "pending":
+        return "status-pending";
+      default:
+        return "status-completed";
+    }
+  };
+
+  const getTypeIcon = (type) => {
+    switch (type.toLowerCase()) {
+      case "lab report":
+        return <FileText className="h-4 w-4" />;
+      case "x-ray":
+      case "mri scan":
+        return <FileText className="h-4 w-4" />;
+      case "prescription":
+        return <FileText className="h-4 w-4" />;
+      case "consultation":
+        return <User className="h-4 w-4" />;
+      default:
+        return <FileText className="h-4 w-4" />;
+    }
+  };
 
   return (
     <div className="animate-fade-in">
-      {/* Inline styles for this component */}
+      {/* Inline styles */}
       <style jsx>{`
         .animate-fade-in {
           animation: fade-in 0.3s ease-in-out;
@@ -182,7 +170,7 @@ const Records = () => {
           to { opacity: 1; }
         }
         
-        .status-active {
+        .status-completed {
           display: inline-flex;
           align-items: center;
           border-radius: 9999px;
@@ -191,6 +179,17 @@ const Records = () => {
           font-weight: 500;
           background-color: #dcfce7;
           color: #166534;
+        }
+        
+        .status-active {
+          display: inline-flex;
+          align-items: center;
+          border-radius: 9999px;
+          padding: 0.25rem 0.5rem;
+          font-size: 0.75rem;
+          font-weight: 500;
+          background-color: #dbeafe;
+          color: #1e40af;
         }
         
         .status-pending {
@@ -203,137 +202,137 @@ const Records = () => {
           background-color: #fef3c7;
           color: #92400e;
         }
+        
+        .record-card {
+          transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        
+        .record-card:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .filter-button {
+          padding: 0.5rem 1rem;
+          border-radius: 0.375rem;
+          border: 1px solid #d1d5db;
+          background-color: white;
+          color: #374151;
+          font-size: 0.875rem;
+          transition: all 0.2s;
+          cursor: pointer;
+        }
+        
+        .filter-button:hover {
+          background-color: #f3f4f6;
+        }
+        
+        .filter-button.active {
+          background-color: #274D60;
+          color: white;
+          border-color: #274D60;
+        }
       `}</style>
 
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-3xl font-bold">Medical Records</h1>
-        <div className="flex gap-2">
-          <Button variant="outline" className="flex items-center gap-2">
-            <Upload className="h-4 w-4" /> Upload Records
-          </Button>
-          <Button className="bg-[#274D60] hover:bg-[#1A3A4A] text-white">
-            <FileText className="mr-2 h-4 w-4" /> New Record
-          </Button>
-        </div>
+        <Button className="bg-[#274D60] hover:bg-[#1A3A4A] text-white">
+          <Plus className="mr-2 h-4 w-4" /> Add Record
+        </Button>
       </div>
 
-      <div className="mb-6">
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList>
-            <TabsTrigger 
-              value="all" 
-              onClick={setActiveTab} 
-              isActive={activeTab === "all"}
-            >
-              All Records
-            </TabsTrigger>
-            <TabsTrigger 
-              value="pending" 
-              onClick={setActiveTab} 
-              isActive={activeTab === "pending"}
-            >
-              Pending
-            </TabsTrigger>
-            <TabsTrigger 
-              value="completed" 
-              onClick={setActiveTab} 
-              isActive={activeTab === "completed"}
-            >
-              Completed
-            </TabsTrigger>
-          </TabsList>
-        </Tabs>
-      </div>
-
-      <Card>
-        <CardHeader className="pb-3">
-          <CardTitle>Patient Records</CardTitle>
-          <CardDescription>
-            Browse and manage all patient medical records in your facility
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          {/* Search and filter bar */}
-          <div className="mb-6 flex flex-col gap-4 sm:flex-row">
+      {/* Search and filter bar */}
+      <Card className="mb-6">
+        <CardContent className="p-6">
+          <div className="flex flex-col gap-4 sm:flex-row">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-              <Input placeholder="Search records by patient name, ID, or type..." className="pl-9" />
+              <Input
+                placeholder="Search records by patient, type, or doctor..."
+                className="pl-9"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
             </div>
-            <Button variant="outline" className="flex items-center gap-2">
-              <Filter className="h-4 w-4" /> Filter
-            </Button>
-          </div>
-
-          {/* Records list */}
-          <div className="overflow-auto rounded-md border">
-            <div className="min-w-[800px]">
-              {/* Table header */}
-              <div className="grid grid-cols-12 border-b bg-muted/50 px-4 py-3 text-sm font-medium">
-                <div className="col-span-3">Patient / Record</div>
-                <div className="col-span-2">Department</div>
-                <div className="col-span-2">Doctor</div>
-                <div className="col-span-2">Date</div>
-                <div className="col-span-2">Status</div>
-                <div className="col-span-1 text-right">Actions</div>
-              </div>
-
-              {/* Records */}
-              {filteredRecords.map((record) => (
-                <div
-                  key={record.id}
-                  className="grid grid-cols-12 border-b px-4 py-4 hover:bg-muted/30"
+            <div className="flex gap-2">
+              {["all", "completed", "active", "pending"].map((filter) => (
+                <button
+                  key={filter}
+                  onClick={() => setSelectedFilter(filter)}
+                  className={`filter-button ${selectedFilter === filter ? "active" : ""}`}
                 >
-                  <div className="col-span-3">
-                    <div className="flex items-start">
-                      <div className="mr-3 rounded-md bg-[#274D60]/10 p-2 text-[#274D60]">
-                        <FileText className="h-5 w-5" />
-                      </div>
-                      <div>
-                        <p className="font-medium">{record.patientName}</p>
-                        <p className="text-xs text-muted-foreground">
-                          {record.recordType} ({record.fileSize})
-                        </p>
-                        <p className="text-xs text-muted-foreground">ID: {record.patientId}</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="col-span-2 flex items-center">{record.department}</div>
-                  <div className="col-span-2 flex items-center">{record.doctor}</div>
-                  <div className="col-span-2 flex items-center">{record.date}</div>
-
-                  <div className="col-span-2 flex items-center">
-                    <span
-                      className={
-                        record.status === "Completed"
-                          ? "status-active"
-                          : "status-pending"
-                      }
-                    >
-                      {record.status}
-                    </span>
-                  </div>
-
-                  <div className="col-span-1 flex items-center justify-end">
-                    <Button variant="ghost" size="icon">
-                      <Download className="h-4 w-4" />
-                    </Button>
-                    <Button variant="ghost" size="icon">
-                      <Share2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
+                  {filter.charAt(0).toUpperCase() + filter.slice(1)}
+                </button>
               ))}
-
-              {filteredRecords.length === 0 && (
-                <div className="py-8 text-center text-muted-foreground">
-                  No records found matching the current filters
-                </div>
-              )}
             </div>
           </div>
         </CardContent>
       </Card>
+
+      {/* Records grid */}
+      <div className="grid gap-6 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
+        {filteredRecords.map((record) => (
+          <Card key={record.id} className="record-card cursor-pointer">
+            <CardContent className="p-6">
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#274D60] text-white">
+                    {getTypeIcon(record.type)}
+                  </div>
+                  <div>
+                    <h3 className="font-semibold">{record.type}</h3>
+                    <p className="text-sm text-muted-foreground">{record.id}</p>
+                  </div>
+                </div>
+                <span className={getStatusColor(record.status)}>
+                  {record.status}
+                </span>
+              </div>
+              
+              <div className="space-y-2 mb-4">
+                <div className="flex items-center gap-2 text-sm">
+                  <User className="h-4 w-4 text-muted-foreground" />
+                  <span>{record.patientName} ({record.patientId})</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <Calendar className="h-4 w-4 text-muted-foreground" />
+                  <span>{new Date(record.date).toLocaleDateString()}</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <User className="h-4 w-4 text-muted-foreground" />
+                  <span>{record.doctor}</span>
+                </div>
+              </div>
+              
+              <p className="text-sm text-muted-foreground mb-4">
+                {record.description}
+              </p>
+              
+              <div className="flex gap-2">
+                <Button variant="outline" size="sm" className="flex-1">
+                  View
+                </Button>
+                <Button size="sm" className="flex-1 bg-[#274D60] hover:bg-[#1A3A4A] text-white">
+                  <Download className="mr-1 h-3 w-3" />
+                  Download
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {filteredRecords.length === 0 && (
+        <Card>
+          <CardContent className="p-12 text-center">
+            <FileText className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+            <h3 className="text-lg font-semibold mb-2">No records found</h3>
+            <p className="text-muted-foreground">
+              No medical records match your current search criteria.
+            </p>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 };

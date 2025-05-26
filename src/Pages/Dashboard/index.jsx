@@ -1,7 +1,11 @@
 
 import React from "react";
 import { LayoutDashboard, Users, UserRound, MessageSquare, FileText, ArrowUp, ArrowDown, Activity, Calendar } from "lucide-react";
-import { cn } from "@/lib/utils";
+
+// Inline utility function
+const cn = (...classes) => {
+  return classes.filter(Boolean).join(' ');
+};
 
 // Inline UI Components
 const Card = ({ className, ...props }) => (
@@ -20,253 +24,209 @@ const CardTitle = ({ className, ...props }) => (
   <h3 className={cn("text-2xl font-semibold leading-none tracking-tight", className)} {...props} />
 );
 
-const CardDescription = ({ className, ...props }) => (
-  <p className={cn("text-sm text-muted-foreground", className)} {...props} />
-);
-
-const Progress = ({ value, className, indicatorClassName, ...props }) => (
-  <div className={cn("relative h-4 w-full overflow-hidden rounded-full bg-secondary", className)} {...props}>
-    <div
-      className={cn("h-full w-full flex-1 bg-primary transition-all", indicatorClassName)}
-      style={{ transform: `translateX(-${100 - (value || 0)}%)` }}
-    />
-  </div>
-);
-
 const Dashboard = () => {
-  // Mock data for stats
+  // Mock data
   const stats = [
     {
       title: "Total Patients",
-      value: "3,285",
+      value: "1,234",
+      change: "+12.3%",
+      trend: "up",
       icon: Users,
-      change: "+12%",
-      trend: "up",
     },
     {
-      title: "Appointments",
-      value: "42",
-      icon: Calendar,
-      change: "+8%",
+      title: "Active Doctors",
+      value: "56",
+      change: "+2.1%",
       trend: "up",
+      icon: UserRound,
     },
     {
-      title: "Medical Records",
-      value: "1,235",
-      icon: FileText,
-      change: "+23%",
-      trend: "up",
-    },
-    {
-      title: "Total Staff",
-      value: "48",
-      icon: Users,
-      change: "-3%",
+      title: "Appointments Today",
+      value: "89",
+      change: "-5.2%",
       trend: "down",
+      icon: Calendar,
+    },
+    {
+      title: "System Health",
+      value: "98.5%",
+      change: "+0.8%",
+      trend: "up",
+      icon: Activity,
     },
   ];
 
-  // Mock data for recent activity
-  const recentActivity = [
+  const recentAppointments = [
     {
-      patient: "Emma Wilson",
-      action: "Appointment scheduled",
-      doctor: "Dr. Roberts",
-      time: "10 minutes ago",
-    },
-    {
-      patient: "John Miller",
-      action: "Lab results updated",
-      doctor: "Dr. Thompson",
-      time: "25 minutes ago",
-    },
-    {
-      patient: "Sophia Garcia",
-      action: "Prescription renewed",
-      doctor: "Dr. Johnson",
-      time: "1 hour ago",
-    },
-    {
-      patient: "Michael Chen",
-      action: "Check-up completed",
-      doctor: "Dr. Williams",
-      time: "2 hours ago",
-    },
-    {
-      patient: "Olivia Brown",
-      action: "MRI scheduled",
-      doctor: "Dr. Davis",
-      time: "3 hours ago",
-    },
-  ];
-
-  // Mock data for upcoming appointments
-  const upcomingAppointments = [
-    {
-      patient: "Robert Lee",
+      id: 1,
+      patient: "John Doe",
+      doctor: "Dr. Smith",
       time: "10:00 AM",
-      type: "Check-up",
-      doctor: "Dr. Martinez",
       status: "Confirmed",
     },
     {
-      patient: "Sarah Johnson",
+      id: 2,
+      patient: "Jane Wilson",
+      doctor: "Dr. Johnson",
       time: "11:30 AM",
-      type: "Follow-up",
-      doctor: "Dr. Thompson",
       status: "Pending",
     },
     {
-      patient: "David Wilson",
-      time: "1:15 PM",
-      type: "Consultation",
-      doctor: "Dr. Roberts",
-      status: "Confirmed",
+      id: 3,
+      patient: "Bob Brown",
+      doctor: "Dr. Davis",
+      time: "2:15 PM",
+      status: "Completed",
     },
-  ];
-
-  // Mock data for department workload
-  const departmentWorkload = [
-    { department: "Cardiology", patients: 42, capacity: 60 },
-    { department: "Neurology", patients: 38, capacity: 45 },
-    { department: "Pediatrics", patients: 28, capacity: 50 },
-    { department: "Orthopedics", patients: 35, capacity: 40 },
   ];
 
   return (
     <div className="animate-fade-in">
-      <h1 className="mb-6 text-3xl font-bold">Dashboard</h1>
-      
-      {/* Stats Section */}
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      {/* Inline styles */}
+      <style jsx>{`
+        .animate-fade-in {
+          animation: fade-in 0.3s ease-in-out;
+        }
+        
+        @keyframes fade-in {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        
+        .trend-up {
+          color: #16a34a;
+        }
+        
+        .trend-down {
+          color: #dc2626;
+        }
+        
+        .status-confirmed {
+          background-color: #dcfce7;
+          color: #166534;
+          padding: 0.25rem 0.5rem;
+          border-radius: 9999px;
+          font-size: 0.75rem;
+          font-weight: 500;
+        }
+        
+        .status-pending {
+          background-color: #fef3c7;
+          color: #92400e;
+          padding: 0.25rem 0.5rem;
+          border-radius: 9999px;
+          font-size: 0.75rem;
+          font-weight: 500;
+        }
+        
+        .status-completed {
+          background-color: #dbeafe;
+          color: #1e40af;
+          padding: 0.25rem 0.5rem;
+          border-radius: 9999px;
+          font-size: 0.75rem;
+          font-weight: 500;
+        }
+      `}</style>
+
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold">Dashboard</h1>
+        <p className="text-muted-foreground">Welcome to your healthcare management system</p>
+      </div>
+
+      {/* Stats Grid */}
+      <div className="mb-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
         {stats.map((stat, index) => (
-          <Card key={index} className="card-hover">
+          <Card key={index}>
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">{stat.title}</p>
-                  <h3 className="mt-1 text-2xl font-bold">{stat.value}</h3>
+                  <p className="text-2xl font-bold">{stat.value}</p>
+                  <div className="flex items-center text-sm">
+                    {stat.trend === "up" ? (
+                      <ArrowUp className="mr-1 h-3 w-3 trend-up" />
+                    ) : (
+                      <ArrowDown className="mr-1 h-3 w-3 trend-down" />
+                    )}
+                    <span className={stat.trend === "up" ? "trend-up" : "trend-down"}>
+                      {stat.change}
+                    </span>
+                  </div>
                 </div>
-                <div className="rounded-full bg-medical/10 p-2 text-medical">
-                  <stat.icon size={20} />
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#274D60] text-white">
+                  <stat.icon className="h-6 w-6" />
                 </div>
-              </div>
-              <div className="mt-3 flex items-center text-xs">
-                {stat.trend === "up" ? (
-                  <ArrowUp className="mr-1 h-3 w-3 text-medical-success" />
-                ) : (
-                  <ArrowDown className="mr-1 h-3 w-3 text-medical-danger" />
-                )}
-                <span className={stat.trend === "up" ? "text-medical-success" : "text-medical-danger"}>
-                  {stat.change}
-                </span>
-                <span className="ml-1 text-muted-foreground">from last month</span>
               </div>
             </CardContent>
           </Card>
         ))}
       </div>
 
-      <div className="mt-6 grid gap-6 lg:grid-cols-2">
-        {/* Department Workload */}
-        <Card className="card-hover">
+      {/* Recent Activity */}
+      <div className="grid gap-6 lg:grid-cols-2">
+        <Card>
           <CardHeader>
-            <CardTitle className="flex items-center">
-              <Activity className="mr-2 h-5 w-5" />
-              Department Workload
-            </CardTitle>
-            <CardDescription>Current patient distribution across departments</CardDescription>
+            <CardTitle>Recent Appointments</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {departmentWorkload.map((dept, index) => {
-                const percentage = Math.round((dept.patients / dept.capacity) * 100);
-                return (
-                  <div key={index}>
-                    <div className="mb-1 flex items-center justify-between">
-                      <span className="text-sm font-medium">{dept.department}</span>
-                      <span className="text-sm text-muted-foreground">
-                        {dept.patients}/{dept.capacity} patients ({percentage}%)
-                      </span>
-                    </div>
-                    <Progress
-                      value={percentage}
-                      className={`h-2 ${
-                        percentage > 80 ? "bg-medical-danger/30" : "bg-medical/30"
-                      }`}
-                      indicatorClassName={percentage > 80 ? "bg-medical-danger" : "bg-medical"}
-                    />
-                  </div>
-                );
-              })}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Upcoming Appointments */}
-        <Card className="card-hover">
-          <CardHeader>
-            <CardTitle className="flex items-center">
-              <Calendar className="mr-2 h-5 w-5" />
-              Upcoming Appointments
-            </CardTitle>
-            <CardDescription>Today's scheduled appointments</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {upcomingAppointments.map((appointment, index) => (
-                <div key={index} className="flex items-center justify-between border-b pb-3 last:border-0">
+              {recentAppointments.map((appointment) => (
+                <div key={appointment.id} className="flex items-center justify-between border-b pb-4 last:border-b-0">
                   <div>
                     <p className="font-medium">{appointment.patient}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {appointment.time} - {appointment.type}
-                    </p>
+                    <p className="text-sm text-muted-foreground">{appointment.doctor}</p>
+                    <p className="text-sm text-muted-foreground">{appointment.time}</p>
                   </div>
-                  <div className="text-right">
-                    <p className="text-sm">{appointment.doctor}</p>
-                    <p
-                      className={`text-xs ${
-                        appointment.status === "Confirmed"
-                          ? "text-medical-success"
-                          : "text-medical-warning"
-                      }`}
-                    >
-                      {appointment.status}
-                    </p>
-                  </div>
+                  <span
+                    className={
+                      appointment.status === "Confirmed"
+                        ? "status-confirmed"
+                        : appointment.status === "Pending"
+                        ? "status-pending"
+                        : "status-completed"
+                    }
+                  >
+                    {appointment.status}
+                  </span>
                 </div>
               ))}
             </div>
           </CardContent>
         </Card>
-      </div>
 
-      {/* Recent Activity */}
-      <Card className="mt-6 card-hover">
-        <CardHeader>
-          <CardTitle>Recent Activity</CardTitle>
-          <CardDescription>Latest updates from your medical facility</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {recentActivity.map((activity, index) => (
-              <div key={index} className="flex items-center border-b pb-3 last:border-0">
-                <div className="mr-4 h-2 w-2 rounded-full bg-medical" />
+        <Card>
+          <CardHeader>
+            <CardTitle>Quick Actions</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-3">
+              <button className="flex items-center gap-3 rounded-lg border p-3 text-left hover:bg-accent">
+                <Users className="h-5 w-5 text-[#274D60]" />
                 <div>
-                  <p className="text-sm">
-                    <span className="font-medium">{activity.patient}</span> - {activity.action}
-                  </p>
-                  <div className="mt-1 flex text-xs text-muted-foreground">
-                    <span>{activity.doctor}</span>
-                    <span className="mx-2">•</span>
-                    <span>{activity.time}</span>
-                  </div>
+                  <p className="font-medium">Add New Patient</p>
+                  <p className="text-sm text-muted-foreground">Register a new patient</p>
                 </div>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+              </button>
+              <button className="flex items-center gap-3 rounded-lg border p-3 text-left hover:bg-accent">
+                <Calendar className="h-5 w-5 text-[#274D60]" />
+                <div>
+                  <p className="font-medium">Schedule Appointment</p>
+                  <p className="text-sm text-muted-foreground">Book a new appointment</p>
+                </div>
+              </button>
+              <button className="flex items-center gap-3 rounded-lg border p-3 text-left hover:bg-accent">
+                <MessageSquare className="h-5 w-5 text-[#274D60]" />
+                <div>
+                  <p className="font-medium">Send Message</p>
+                  <p className="text-sm text-muted-foreground">Communicate with staff</p>
+                </div>
+              </button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 };

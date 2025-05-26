@@ -1,6 +1,6 @@
 
 import React, { useState } from "react";
-import { Search, Send, PaperclipIcon } from "lucide-react";
+import { Search, Send, MoreVertical, Phone, Video } from "lucide-react";
 
 // Inline utility function
 const cn = (...classes) => {
@@ -13,6 +13,7 @@ const Button = ({ className, variant = "default", size = "default", ...props }) 
   const variants = {
     default: "bg-primary text-primary-foreground hover:bg-primary/90",
     outline: "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+    ghost: "hover:bg-accent hover:text-accent-foreground",
   };
   const sizes = {
     default: "h-10 px-4 py-2",
@@ -47,145 +48,104 @@ const CardContent = ({ className, ...props }) => (
   <div className={cn("p-6", className)} {...props} />
 );
 
-const Avatar = ({ className, children, ...props }) => (
-  <div className={cn("relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full", className)} {...props}>
+const ScrollArea = ({ className, children, ...props }) => (
+  <div className={cn("relative overflow-auto", className)} {...props}>
     {children}
   </div>
 );
 
-const AvatarImage = ({ className, ...props }) => (
-  <img className={cn("aspect-square h-full w-full", className)} {...props} />
-);
-
-const AvatarFallback = ({ className, ...props }) => (
-  <div className={cn("flex h-full w-full items-center justify-center rounded-full bg-muted", className)} {...props} />
-);
-
 const Messages = () => {
-  const [selectedChat, setSelectedChat] = useState("DR001");
-  const [message, setMessage] = useState("");
+  const [selectedChat, setSelectedChat] = useState(1);
+  const [newMessage, setNewMessage] = useState("");
 
-  // Mock user data (active user)
-  const currentUser = {
-    id: "USR001",
-    name: "Nurse Amanda",
-    role: "Head Nurse",
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Amanda",
-  };
-
-  // Mock conversations
+  // Mock data
   const conversations = [
     {
-      id: "DR001",
+      id: 1,
       name: "Dr. Sarah Johnson",
-      role: "Cardiologist",
-      unread: 0,
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah",
-      lastMessage: "I'll check the patient's records and update you.",
-      time: "10:45 AM",
-      online: true,
-    },
-    {
-      id: "DR002",
-      name: "Dr. David Wilson",
-      role: "Neurologist",
+      lastMessage: "Patient appointment confirmed for tomorrow",
+      time: "2 min ago",
       unread: 2,
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=David",
-      lastMessage: "The MRI results are in. We need to discuss them.",
-      time: "Yesterday",
-      online: false,
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah",
+      isOnline: true,
     },
     {
-      id: "DR003",
-      name: "Dr. Emily Davis",
-      role: "Pediatrician",
+      id: 2,
+      name: "Dr. Michael Brown",
+      lastMessage: "Lab results are ready for review",
+      time: "15 min ago",
       unread: 0,
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Emily",
-      lastMessage: "Can you prepare room 302 for the next patient?",
-      time: "Yesterday",
-      online: true,
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Michael",
+      isOnline: false,
     },
     {
-      id: "NR001",
-      name: "Nurse Rachel",
-      role: "ER Nurse",
+      id: 3,
+      name: "Nurse Emma Wilson",
+      lastMessage: "Medication schedule updated",
+      time: "1 hour ago",
       unread: 1,
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Rachel",
-      lastMessage: "Emergency case coming in. Need assistance.",
-      time: "2 days ago",
-      online: true,
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Emma",
+      isOnline: true,
+    },
+    {
+      id: 4,
+      name: "Dr. David Chen",
+      lastMessage: "Emergency consultation needed",
+      time: "2 hours ago",
+      unread: 0,
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=David",
+      isOnline: false,
     },
   ];
 
-  // Mock messages for the selected chat
-  const mockMessages = {
-    DR001: [
-      {
-        id: "m1",
-        sender: "DR001",
-        text: "Hello Nurse Amanda, how are the patients in ward 3 doing today?",
-        time: "10:30 AM",
-      },
-      {
-        id: "m2",
-        sender: "USR001",
-        text: "Good morning Dr. Johnson! All stable. Mr. Peterson's blood pressure has improved since yesterday.",
-        time: "10:32 AM",
-      },
-      {
-        id: "m3",
-        sender: "DR001",
-        text: "That's great news. What about Mrs. Rodriguez? Has she taken her medication?",
-        time: "10:35 AM",
-      },
-      {
-        id: "m4",
-        sender: "USR001",
-        text: "Yes, she's taken all scheduled medications. Her temperature is now normal.",
-        time: "10:38 AM",
-      },
-      {
-        id: "m5",
-        sender: "DR001",
-        text: "Perfect. I'll be making rounds after lunch. Please prepare their charts.",
-        time: "10:40 AM",
-      },
-      {
-        id: "m6",
-        sender: "USR001",
-        text: "Will do. Anything specific you want to check with any patient?",
-        time: "10:42 AM",
-      },
-      {
-        id: "m7",
-        sender: "DR001",
-        text: "I'll check the patient's records and update you.",
-        time: "10:45 AM",
-      },
-    ],
-  };
-
-  // Get messages for selected chat
-  const getMessages = (chatId) => {
-    return mockMessages[chatId] || [];
-  };
+  const messages = [
+    {
+      id: 1,
+      sender: "Dr. Sarah Johnson",
+      content: "Good morning! I wanted to confirm the appointment for Mrs. Thompson tomorrow at 10 AM.",
+      time: "09:15",
+      isOwn: false,
+    },
+    {
+      id: 2,
+      sender: "You",
+      content: "Yes, that's confirmed. I've already prepared her file and the necessary tests.",
+      time: "09:18",
+      isOwn: true,
+    },
+    {
+      id: 3,
+      sender: "Dr. Sarah Johnson",
+      content: "Perfect! Also, please make sure to have her latest blood work results ready.",
+      time: "09:20",
+      isOwn: false,
+    },
+    {
+      id: 4,
+      sender: "You",
+      content: "Already done. The results are in her file and everything looks normal.",
+      time: "09:22",
+      isOwn: true,
+    },
+    {
+      id: 5,
+      sender: "Dr. Sarah Johnson",
+      content: "Excellent work as always. See you tomorrow!",
+      time: "09:25",
+      isOwn: false,
+    },
+  ];
 
   const handleSendMessage = () => {
-    if (message.trim() && selectedChat) {
-      // In a real app, this would send to API
-      console.log(`Sending message to ${selectedChat}: ${message}`);
-      setMessage("");
+    if (newMessage.trim()) {
+      // Here you would typically send the message to your backend
+      console.log("Sending message:", newMessage);
+      setNewMessage("");
     }
   };
 
-  // Get selected conversation details
-  const selectedConversation = selectedChat
-    ? conversations.find((conv) => conv.id === selectedChat)
-    : null;
-
   return (
-    <div className="animate-fade-in">
-      {/* Inline styles for this component */}
+    <div className="h-full">
       <style jsx>{`
         .animate-fade-in {
           animation: fade-in 0.3s ease-in-out;
@@ -195,159 +155,177 @@ const Messages = () => {
           from { opacity: 0; }
           to { opacity: 1; }
         }
+        
+        .online-indicator {
+          position: absolute;
+          bottom: 0;
+          right: 0;
+          width: 12px;
+          height: 12px;
+          background-color: #10b981;
+          border: 2px solid white;
+          border-radius: 50%;
+        }
+        
+        .message-bubble {
+          max-width: 70%;
+          padding: 12px 16px;
+          border-radius: 16px;
+          word-wrap: break-word;
+        }
+        
+        .message-own {
+          background-color: #274D60;
+          color: white;
+          margin-left: auto;
+        }
+        
+        .message-other {
+          background-color: #f3f4f6;
+          color: #111827;
+        }
+        
+        .unread-badge {
+          background-color: #274D60;
+          color: white;
+          font-size: 12px;
+          font-weight: 600;
+          padding: 2px 6px;
+          border-radius: 10px;
+          min-width: 18px;
+          height: 18px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
       `}</style>
 
-      <h1 className="mb-6 text-3xl font-bold">Messages</h1>
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold">Messages</h1>
+        <p className="text-muted-foreground">Communicate with your healthcare team</p>
+      </div>
 
-      <div className="grid h-[75vh] grid-cols-1 gap-6 lg:grid-cols-3">
-        {/* Conversations List */}
-        <Card className="lg:col-span-1">
-          <CardContent className="p-0">
-            <div className="border-b p-4">
+      <Card className="h-[700px]">
+        <div className="flex h-full">
+          {/* Conversation List */}
+          <div className="w-80 border-r">
+            <div className="p-4 border-b">
               <div className="relative">
                 <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                <Input placeholder="Search messages..." className="pl-9" />
+                <Input placeholder="Search conversations..." className="pl-9" />
               </div>
             </div>
-            <div className="h-[calc(75vh-130px)] overflow-auto">
-              {conversations.map((chat) => (
-                <div
-                  key={chat.id}
-                  className={`flex cursor-pointer items-center border-b p-4 hover:bg-muted/50 ${
-                    selectedChat === chat.id ? "bg-muted" : ""
-                  }`}
-                  onClick={() => setSelectedChat(chat.id)}
-                >
-                  <div className="relative">
-                    <Avatar className="h-12 w-12">
-                      <AvatarImage src={chat.avatar} alt={chat.name} />
-                      <AvatarFallback>{chat.name.substring(0, 2)}</AvatarFallback>
-                    </Avatar>
-                    {chat.online && (
-                      <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-green-500 ring-2 ring-white" />
-                    )}
-                  </div>
-                  <div className="ml-3 flex-1">
-                    <div className="flex items-center justify-between">
-                      <h3 className="font-medium">{chat.name}</h3>
-                      <span className="text-xs text-muted-foreground">{chat.time}</span>
+            
+            <ScrollArea className="h-full">
+              <div className="p-2">
+                {conversations.map((conversation) => (
+                  <div
+                    key={conversation.id}
+                    onClick={() => setSelectedChat(conversation.id)}
+                    className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-colors ${
+                      selectedChat === conversation.id
+                        ? "bg-[#274D60] text-white"
+                        : "hover:bg-gray-100"
+                    }`}
+                  >
+                    <div className="relative">
+                      <img
+                        src={conversation.avatar}
+                        alt={conversation.name}
+                        className="w-12 h-12 rounded-full"
+                      />
+                      {conversation.isOnline && <div className="online-indicator"></div>}
                     </div>
-                    <p className="text-sm text-muted-foreground">{chat.role}</p>
-                    <p className="mt-1 truncate text-sm">{chat.lastMessage}</p>
-                  </div>
-                  {chat.unread > 0 && (
-                    <div className="ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-[#274D60] text-xs text-white">
-                      {chat.unread}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Chat Window */}
-        <Card className="lg:col-span-2">
-          <CardContent className="flex h-full flex-col p-0">
-            {selectedChat && selectedConversation ? (
-              <>
-                {/* Chat Header */}
-                <div className="flex items-center border-b p-4">
-                  <div className="relative">
-                    <Avatar className="h-10 w-10">
-                      <AvatarImage src={selectedConversation.avatar} alt={selectedConversation.name} />
-                      <AvatarFallback>{selectedConversation.name.substring(0, 2)}</AvatarFallback>
-                    </Avatar>
-                    {selectedConversation.online && (
-                      <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-green-500 ring-2 ring-white" />
-                    )}
-                  </div>
-                  <div className="ml-3">
-                    <h3 className="font-medium">{selectedConversation.name}</h3>
-                    <p className="text-xs text-muted-foreground">{selectedConversation.role}</p>
-                  </div>
-                </div>
-
-                {/* Chat Messages */}
-                <div className="flex-1 overflow-auto p-4">
-                  <div className="space-y-4">
-                    {getMessages(selectedChat).map((msg) => (
-                      <div
-                        key={msg.id}
-                        className={`flex ${msg.sender === currentUser.id ? "justify-end" : ""}`}
-                      >
-                        {msg.sender !== currentUser.id && (
-                          <Avatar className="mr-2 h-8 w-8">
-                            <AvatarImage
-                              src={selectedConversation.avatar}
-                              alt={selectedConversation.name}
-                            />
-                            <AvatarFallback>{selectedConversation.name.substring(0, 2)}</AvatarFallback>
-                          </Avatar>
-                        )}
-                        <div
-                          className={`max-w-[70%] rounded-lg p-3 ${
-                            msg.sender === currentUser.id
-                              ? "bg-[#274D60] text-white"
-                              : "bg-muted"
-                          }`}
-                        >
-                          <p className="text-sm">{msg.text}</p>
-                          <p
-                            className={`mt-1 text-right text-xs ${
-                              msg.sender === currentUser.id
-                                ? "text-white/70"
-                                : "text-muted-foreground"
-                            }`}
-                          >
-                            {msg.time}
-                          </p>
-                        </div>
-                        {msg.sender === currentUser.id && (
-                          <Avatar className="ml-2 h-8 w-8">
-                            <AvatarImage src={currentUser.avatar} alt={currentUser.name} />
-                            <AvatarFallback>{currentUser.name.substring(0, 2)}</AvatarFallback>
-                          </Avatar>
-                        )}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between">
+                        <p className="font-medium truncate">{conversation.name}</p>
+                        <span className="text-xs text-muted-foreground">{conversation.time}</span>
                       </div>
-                    ))}
+                      <p className="text-sm text-muted-foreground truncate">
+                        {conversation.lastMessage}
+                      </p>
+                    </div>
+                    {conversation.unread > 0 && (
+                      <div className="unread-badge">{conversation.unread}</div>
+                    )}
                   </div>
-                </div>
-
-                {/* Message Input */}
-                <div className="border-t p-4">
-                  <div className="flex items-center">
-                    <Button variant="outline" size="icon" className="mr-2">
-                      <PaperclipIcon className="h-4 w-4" />
-                    </Button>
-                    <Input
-                      placeholder="Type a message..."
-                      value={message}
-                      onChange={(e) => setMessage(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") handleSendMessage();
-                      }}
-                      className="flex-1"
-                    />
-                    <Button
-                      className="ml-2 bg-[#274D60] hover:bg-[#1A3A4A] text-white"
-                      size="icon"
-                      onClick={handleSendMessage}
-                      disabled={!message.trim()}
-                    >
-                      <Send className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-              </>
-            ) : (
-              <div className="flex h-full items-center justify-center">
-                <p className="text-muted-foreground">Select a conversation to start messaging</p>
+                ))}
               </div>
-            )}
-          </CardContent>
-        </Card>
-      </div>
+            </ScrollArea>
+          </div>
+
+          {/* Chat Area */}
+          <div className="flex-1 flex flex-col">
+            {/* Chat Header */}
+            <div className="p-4 border-b flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <img
+                  src={conversations.find(c => c.id === selectedChat)?.avatar}
+                  alt="Profile"
+                  className="w-10 h-10 rounded-full"
+                />
+                <div>
+                  <h3 className="font-medium">
+                    {conversations.find(c => c.id === selectedChat)?.name}
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    {conversations.find(c => c.id === selectedChat)?.isOnline ? "Online" : "Offline"}
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <Button variant="ghost" size="icon">
+                  <Phone className="h-4 w-4" />
+                </Button>
+                <Button variant="ghost" size="icon">
+                  <Video className="h-4 w-4" />
+                </Button>
+                <Button variant="ghost" size="icon">
+                  <MoreVertical className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+
+            {/* Messages */}
+            <ScrollArea className="flex-1 p-4">
+              <div className="space-y-4">
+                {messages.map((message) => (
+                  <div
+                    key={message.id}
+                    className={`flex ${message.isOwn ? "justify-end" : "justify-start"}`}
+                  >
+                    <div className={`message-bubble ${message.isOwn ? "message-own" : "message-other"}`}>
+                      <p className="text-sm">{message.content}</p>
+                      <p className={`text-xs mt-1 ${message.isOwn ? "text-white/70" : "text-gray-500"}`}>
+                        {message.time}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </ScrollArea>
+
+            {/* Message Input */}
+            <div className="p-4 border-t">
+              <div className="flex gap-2">
+                <Input
+                  placeholder="Type a message..."
+                  value={newMessage}
+                  onChange={(e) => setNewMessage(e.target.value)}
+                  onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
+                  className="flex-1"
+                />
+                <Button
+                  onClick={handleSendMessage}
+                  className="bg-[#274D60] hover:bg-[#1A3A4A] text-white"
+                >
+                  <Send className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Card>
     </div>
   );
 };
