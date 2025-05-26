@@ -11,6 +11,7 @@ import Doctors from "./pages/Doctors";
 import Messages from "./pages/Messages";
 import Records from "./pages/Records";
 import NotFound from "./pages/NotFound";
+import DashboardRoutes from "./Pages/Dashboard/Routes";
 
 const queryClient = new QueryClient();
 
@@ -28,6 +29,7 @@ const App = () => (
             <Route path="/messages" element={<Messages />} />
             <Route path="/records" element={<Records />} />
           </Route>
+          <Route path="/dashboard/*" element={<DashboardRoutes />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
