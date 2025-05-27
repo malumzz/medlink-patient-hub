@@ -1,7 +1,6 @@
-
 import React from "react";
 import { NavLink } from "react-router-dom";
-import { LayoutDashboard, Users, UserRound, MessageSquare, FileText } from "lucide-react";
+import { LayoutDashboard, Users, UserRound, MessageSquare, FileText, MapPin } from "lucide-react";
 
 const Sidebar = () => {
   const navigation = [
@@ -30,6 +29,11 @@ const Sidebar = () => {
       icon: FileText,
       path: "/records",
     },
+    {
+      title: "Routes",
+      icon: MapPin,
+      path: "/routes",
+    },
   ];
 
   return (
@@ -39,9 +43,9 @@ const Sidebar = () => {
           <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#274D60]">
             <span className="text-lg font-bold text-white">M</span>
           </div>
-          <span className="ml-2 text-xl font-bold text-[#274D60]">MediCare</span>
+          <span className="ml-2 text-xl font-bold text-[#274D60]">Mpilo Mobile</span>
         </div>
-        <div className="mt-1 text-xs text-gray-500">Healthcare Dashboard</div>
+        <div className="mt-1 text-xs text-gray-500">Admin Dashboard</div>
       </div>
 
       <nav className="flex-1 px-4 py-4">

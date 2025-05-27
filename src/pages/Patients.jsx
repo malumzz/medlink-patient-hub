@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Search, Plus, Filter } from "lucide-react";
 
-// Inline UI Components
 const Button = ({ className = "", variant = "default", size = "default", children, ...props }) => {
   const baseStyles = "inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50";
   const variants = {
@@ -87,76 +86,31 @@ const Patients = () => {
   // Mock patient data
   const patients = [
     {
-      id: "P001",
-      name: "Emma Wilson",
-      age: 35,
-      gender: "Female",
-      contact: "+1 (555) 123-4567",
-      email: "emma.w@example.com",
-      status: "Active",
-    },
-    {
-      id: "P002",
-      name: "John Miller",
-      age: 42,
+      id: "ZA001",
+      name: "Sipho Nkosi",
+      age: 29,
       gender: "Male",
-      contact: "+1 (555) 234-5678",
-      email: "john.m@example.com",
+      contact: "+27 82 123 4567",
+      email: "sipho.nkosi@example.co.za",
       status: "Active",
     },
     {
-      id: "P003",
-      name: "Sophia Garcia",
-      age: 28,
+      id: "ZA002",
+      name: "Thandi Mokoena",
+      age: 34,
       gender: "Female",
-      contact: "+1 (555) 345-6789",
-      email: "sophia.g@example.com",
+      contact: "+27 83 234 5678",
+      email: "thandi.mokoena@example.co.za",
       status: "Inactive",
     },
     {
-      id: "P004",
-      name: "Michael Chen",
-      age: 51,
+      id: "ZA003",
+      name: "Johan van der Merwe",
+      age: 45,
       gender: "Male",
-      contact: "+1 (555) 456-7890",
-      email: "michael.c@example.com",
-      status: "Active",
-    },
-    {
-      id: "P005",
-      name: "Olivia Brown",
-      age: 22,
-      gender: "Female",
-      contact: "+1 (555) 567-8901",
-      email: "olivia.b@example.com",
+      contact: "+27 84 345 6789",
+      email: "johan.vdm@example.co.za",
       status: "Pending",
-    },
-    {
-      id: "P006",
-      name: "James Johnson",
-      age: 65,
-      gender: "Male",
-      contact: "+1 (555) 678-9012",
-      email: "james.j@example.com",
-      status: "Active",
-    },
-    {
-      id: "P007",
-      name: "Ava Martinez",
-      age: 31,
-      gender: "Female",
-      contact: "+1 (555) 789-0123",
-      email: "ava.m@example.com",
-      status: "Inactive",
-    },
-    {
-      id: "P008",
-      name: "William Taylor",
-      age: 47,
-      gender: "Male",
-      contact: "+1 (555) 890-1234",
-      email: "william.t@example.com",
-      status: "Active",
     },
   ];
 

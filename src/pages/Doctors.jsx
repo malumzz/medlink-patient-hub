@@ -1,7 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { Search, Plus } from "lucide-react";
 
-// Inline UI Components
 const Button = ({ className = "", variant = "default", size = "default", children, ...props }) => {
   const baseStyles = "inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50";
   const variants = {
@@ -44,63 +43,59 @@ const CardContent = ({ className = "", children, ...props }) => (
 );
 
 const Doctors = () => {
-  // Mock doctors data
+  // South African doctors data
   const doctors = [
     {
       id: "DR001",
-      name: "Dr. Sarah Johnson",
+      name: "Dr. Noni Mokoena",
       specialty: "Cardiology",
-      experience: "15 years",
-      contact: "+1 (555) 123-4567",
-      email: "sarah.johnson@example.com",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah",
+      experience: "18 years",
+      contact: "+27 82 123 4567",
+      email: "noni.mokoena@mpilo.co.za",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Noni",
     },
     {
       id: "DR002",
-      name: "Dr. David Wilson",
-      specialty: "Neurology",
-      experience: "12 years",
-      contact: "+1 (555) 234-5678",
-      email: "david.wilson@example.com",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=David",
+      name: "Dr. Naledi Khumalo",
+      specialty: "Pediatrics",
+      experience: "10 years",
+      contact: "+27 83 234 5678",
+      email: "naledi.khumalo@mpilo.co.za",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Naledi",
     },
     {
       id: "DR003",
-      name: "Dr. Emily Davis",
-      specialty: "Pediatrics",
-      experience: "8 years",
-      contact: "+1 (555) 345-6789",
-      email: "emily.davis@example.com",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Emily",
-    },
-    {
-      id: "DR004",
-      name: "Dr. Michael Brown",
+      name: "Dr. Pieter van der Merwe",
       specialty: "Orthopedics",
-      experience: "20 years",
-      contact: "+1 (555) 456-7890",
-      email: "michael.brown@example.com",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Michael",
-    },
-    {
-      id: "DR005",
-      name: "Dr. Jessica Martinez",
-      specialty: "Dermatology",
-      experience: "10 years",
-      contact: "+1 (555) 567-8901",
-      email: "jessica.martinez@example.com",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Jessica",
-    },
-    {
-      id: "DR006",
-      name: "Dr. Robert Lee",
-      specialty: "Ophthalmology",
-      experience: "14 years",
-      contact: "+1 (555) 678-9012",
-      email: "robert.lee@example.com",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Robert",
+      experience: "15 years",
+      contact: "+27 84 345 6789",
+      email: "pieter.vdmerwe@mpilo.co.za",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Pieter",
     },
   ];
+
+  // Modal state
+  const [selectedDoctor, setSelectedDoctor] = useState(null);
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const openProfile = (doctor) => {
+    setSelectedDoctor(doctor);
+    setShowProfileModal(true);
+  };
+
+  const closeProfile = () => {
+    setShowProfileModal(false);
+    setSelectedDoctor(null);
+  };
+
+  const filteredDoctors = doctors.filter((doctor) => {
+    const term = searchTerm.toLowerCase();
+    return (
+      doctor.name.toLowerCase().includes(term) ||
+      doctor.specialty.toLowerCase().includes(term)
+    );
+  });
 
   return (
     <div className="animate-fade-in">
@@ -134,12 +129,17 @@ const Doctors = () => {
       {/* Search bar */}
       <div className="mb-6 relative">
         <Search className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
-        <Input placeholder="Search doctors by name, specialty..." className="pl-9" />
+        <Input
+          placeholder="Search doctors by name, specialty..."
+          className="pl-9"
+          value={searchTerm}
+          onChange={e => setSearchTerm(e.target.value)}
+        />
       </div>
 
       {/* Doctors grid */}
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {doctors.map((doctor) => (
+        {filteredDoctors.map((doctor) => (
           <Card key={doctor.id} className="card-hover overflow-hidden">
             <CardContent className="p-0">
               <div className="bg-[#274D60] p-4 text-white">
@@ -167,11 +167,8 @@ const Doctors = () => {
                   <span className="text-gray-500">Email:</span> {doctor.email}
                 </p>
                 <div className="mt-4 flex gap-2">
-                  <Button variant="outline" size="sm" className="flex-1">
+                  <Button variant="outline" size="sm" className="flex-1" onClick={() => openProfile(doctor)}>
                     Profile
-                  </Button>
-                  <Button size="sm" className="flex-1">
-                    Schedule
                   </Button>
                 </div>
               </div>
@@ -179,6 +176,39 @@ const Doctors = () => {
           </Card>
         ))}
       </div>
+
+      {/* Profile Modal */}
+      {showProfileModal && selectedDoctor && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <div className="bg-white rounded-lg shadow-lg max-w-md w-full p-6 relative animate-fade-in">
+            <button
+              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-xl"
+              onClick={closeProfile}
+              aria-label="Close"
+            >
+              &times;
+            </button>
+            <div className="flex flex-col items-center">
+              <img
+                src={selectedDoctor.avatar}
+                alt={selectedDoctor.name}
+                className="h-24 w-24 rounded-full mb-4 border-4 border-[#274D60] object-cover"
+              />
+              <h2 className="text-2xl font-bold mb-1">{selectedDoctor.name}</h2>
+              <span className="mb-2 rounded-full bg-[#274D60]/10 px-3 py-1 text-xs text-[#274D60]">
+                {selectedDoctor.specialty}
+              </span>
+              <div className="text-sm text-gray-700 mb-2">
+                <p><span className="font-medium">Experience:</span> {selectedDoctor.experience}</p>
+                <p><span className="font-medium">Contact:</span> {selectedDoctor.contact}</p>
+                <p><span className="font-medium">Email:</span> {selectedDoctor.email}</p>
+                <p><span className="font-medium">Doctor ID:</span> {selectedDoctor.id}</p>
+              </div>
+              <Button onClick={closeProfile} className="mt-4 w-full">Close</Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

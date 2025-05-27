@@ -1,22 +1,20 @@
-# Welcome to your Lovable project
+# Welcome to your Vite project
 
 ## Project info
 
-**URL**: https://lovable.dev/projects/3b81afc2-9b11-45d3-ae3b-3a022f6c7a9d
+**URL**: https://vitejs.dev/
 
 ## How can I edit this code?
 
 There are several ways of editing your application.
 
-**Use Lovable**
+**Use Vite**
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/3b81afc2-9b11-45d3-ae3b-3a022f6c7a9d) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
+Visit the [Vite Documentation](https://vitejs.dev/guide/) to learn more about configuration and features.
 
 **Use your preferred IDE**
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+If you want to work locally using your own IDE, you can clone this repo and push changes.
 
 The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
 
@@ -62,12 +60,12 @@ This project is built with:
 
 ## How can I deploy this project?
 
-Simply open [Lovable](https://lovable.dev/projects/3b81afc2-9b11-45d3-ae3b-3a022f6c7a9d) and click on Share -> Publish.
+See the [Vite Deployment Guide](https://vitejs.dev/guide/static-deploy.html).
 
-## Can I connect a custom domain to my Lovable project?
+## Can I connect a custom domain to my Vite project?
 
-Yes, you can!
+Yes, you can! See the [Vite Docs on Custom Domains](https://vitejs.dev/guide/static-deploy.html#github-pages) for more info.
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## Admin Dashboard
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+The Admin Dashboard in Mpilo Mobile serves as a centralized hub for administrators to manage users, monitor system activity, and configure application settings. It provides real-time insights, user management capabilities, and access to essential administrative tools to ensure the smooth operation of the Mpilo Mobile platform.

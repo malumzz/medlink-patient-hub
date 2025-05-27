@@ -1,8 +1,6 @@
-
 import React from "react";
 import { Users, Calendar, FileText, Activity, ArrowUp, ArrowDown } from "lucide-react";
 
-// Inline UI Components
 const Card = ({ className = "", children, ...props }) => (
   <div className={`rounded-lg border bg-white shadow-sm ${className}`} {...props}>
     {children}
@@ -49,28 +47,28 @@ const Dashboard = () => {
       title: "Total Patients",
       value: "3,285",
       icon: Users,
-      change: "+12%",
+      change: "+0.8%",
       trend: "up",
     },
     {
-      title: "Appointments",
-      value: "42",
+      title: "Appointments (Monthly Avg)",
+      value: "1,250",
       icon: Calendar,
-      change: "+8%",
+      change: "+2.1%",
       trend: "up",
     },
     {
       title: "Medical Records",
-      value: "1,235",
+      value: "4,500",
       icon: FileText,
-      change: "+23%",
+      change: "+1.5%",
       trend: "up",
     },
     {
       title: "Total Staff",
-      value: "48",
+      value: "238",
       icon: Users,
-      change: "-3%",
+      change: "-0.2%",
       trend: "down",
     },
   ];
@@ -78,68 +76,68 @@ const Dashboard = () => {
   // Mock data for recent activity
   const recentActivity = [
     {
-      patient: "Emma Wilson",
+      patient: "Sipho Dlamini",
       action: "Appointment scheduled",
-      doctor: "Dr. Roberts",
-      time: "10 minutes ago",
+      doctor: "Dr. Thabo Mokoena",
+      time: "5 minutes ago",
     },
     {
-      patient: "John Miller",
+      patient: "Naledi Khumalo",
       action: "Lab results updated",
-      doctor: "Dr. Thompson",
-      time: "25 minutes ago",
+      doctor: "Dr. Naledi Khumalo",
+      time: "20 minutes ago",
     },
     {
-      patient: "Sophia Garcia",
+      patient: "Pieter van der Merwe",
       action: "Prescription renewed",
-      doctor: "Dr. Johnson",
+      doctor: "Dr. Pieter van der Merwe",
+      time: "45 minutes ago",
+    },
+    {
+      patient: "Lindiwe Nkosi",
+      action: "Check-up completed",
+      doctor: "Dr. Lindiwe Nkosi",
       time: "1 hour ago",
     },
     {
-      patient: "Michael Chen",
-      action: "Check-up completed",
-      doctor: "Dr. Williams",
-      time: "2 hours ago",
-    },
-    {
-      patient: "Olivia Brown",
+      patient: "Thandi Mthembu",
       action: "MRI scheduled",
-      doctor: "Dr. Davis",
-      time: "3 hours ago",
+      doctor: "Dr. Thandi Mthembu",
+      time: "2 hours ago",
     },
   ];
 
   // Mock data for upcoming appointments
   const upcomingAppointments = [
     {
-      patient: "Robert Lee",
-      time: "10:00 AM",
+      patient: "Bongani Zulu",
+      time: "09:00 AM",
       type: "Check-up",
-      doctor: "Dr. Martinez",
+      doctor: "Dr. Thabo Mokoena",
       status: "Confirmed",
     },
     {
-      patient: "Sarah Johnson",
-      time: "11:30 AM",
+      patient: "Zanele Mkhize",
+      time: "10:30 AM",
       type: "Follow-up",
-      doctor: "Dr. Thompson",
+      doctor: "Dr. Naledi Khumalo",
       status: "Pending",
     },
     {
-      patient: "David Wilson",
-      time: "1:15 PM",
+      patient: "Johan Smit",
+      time: "12:00 PM",
       type: "Consultation",
-      doctor: "Dr. Roberts",
+      doctor: "Dr. Pieter van der Merwe",
       status: "Confirmed",
     },
   ];
 
   // Mock data for department workload
   const departmentWorkload = [
-    { department: "Cardiology", patients: 42, capacity: 60 },
-    { department: "Neurology", patients: 38, capacity: 45 },
-    { department: "Pediatrics", patients: 28, capacity: 50 },
-    { department: "Orthopedics", patients: 35, capacity: 40 },
+    { department: "Cardiology", patients: 420, capacity: 600 },
+    { department: "Neurology", patients: 38, capacity: 450 },
+    { department: "Pediatrics", patients: 27, capacity: 500 },
+    { department: "Orthopedics", patients: 94, capacity: 400 },
   ];
 
   return (
