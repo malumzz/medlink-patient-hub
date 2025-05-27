@@ -1,10 +1,66 @@
 
 import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Card, CardContent } from "@/components/ui/card";
 import { Search, Send, PaperclipIcon } from "lucide-react";
+
+// Inline UI Components
+const Button = ({ className = "", variant = "default", size = "default", children, disabled, ...props }) => {
+  const baseStyles = "inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50";
+  const variants = {
+    default: "bg-[#274D60] text-white hover:bg-[#1A3A4A]",
+    outline: "border border-gray-300 bg-white hover:bg-gray-50 hover:text-gray-900",
+  };
+  const sizes = {
+    default: "h-10 px-4 py-2",
+    sm: "h-9 rounded-md px-3",
+    lg: "h-11 rounded-md px-8",
+    icon: "h-10 w-10",
+  };
+  
+  return (
+    <button
+      className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`}
+      disabled={disabled}
+      {...props}
+    >
+      {children}
+    </button>
+  );
+};
+
+const Input = ({ className = "", ...props }) => (
+  <input
+    className={`flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#274D60] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
+    {...props}
+  />
+);
+
+const Card = ({ className = "", children, ...props }) => (
+  <div className={`rounded-lg border bg-white text-gray-900 shadow-sm ${className}`} {...props}>
+    {children}
+  </div>
+);
+
+const CardContent = ({ className = "", children, ...props }) => (
+  <div className={`p-6 ${className}`} {...props}>
+    {children}
+  </div>
+);
+
+const Avatar = ({ className = "", children, ...props }) => (
+  <div className={`relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full ${className}`} {...props}>
+    {children}
+  </div>
+);
+
+const AvatarImage = ({ src, alt, className = "" }) => (
+  <img className={`aspect-square h-full w-full ${className}`} src={src} alt={alt} />
+);
+
+const AvatarFallback = ({ className = "", children }) => (
+  <div className={`flex h-full w-full items-center justify-center rounded-full bg-gray-100 ${className}`}>
+    {children}
+  </div>
+);
 
 const Messages = () => {
   const [selectedChat, setSelectedChat] = useState("DR001");
@@ -18,7 +74,6 @@ const Messages = () => {
     avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Amanda",
   };
 
-  // Mock conversations
   const conversations = [
     {
       id: "DR001",
@@ -62,7 +117,6 @@ const Messages = () => {
     },
   ];
 
-  // Mock messages for the selected chat
   const mockMessages = {
     DR001: [
       {
@@ -176,26 +230,34 @@ const Messages = () => {
     ],
   };
 
-  // Get messages for selected chat
   const getMessages = (chatId) => {
     return mockMessages[chatId] || [];
   };
 
   const handleSendMessage = () => {
     if (message.trim() && selectedChat) {
-      // In a real app, this would send to API
       console.log(`Sending message to ${selectedChat}: ${message}`);
       setMessage("");
     }
   };
 
-  // Get selected conversation details
   const selectedConversation = selectedChat
     ? conversations.find((conv) => conv.id === selectedChat)
     : null;
 
   return (
     <div className="animate-fade-in">
+      <style jsx>{`
+        .animate-fade-in {
+          animation: fade-in 0.3s ease-in-out;
+        }
+        
+        @keyframes fade-in {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+      `}</style>
+
       <h1 className="mb-6 text-3xl font-bold">Messages</h1>
 
       <div className="grid h-[75vh] grid-cols-1 gap-6 lg:grid-cols-3">
@@ -204,7 +266,7 @@ const Messages = () => {
           <CardContent className="p-0">
             <div className="border-b p-4">
               <div className="relative">
-                <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                <Search className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
                 <Input placeholder="Search messages..." className="pl-9" />
               </div>
             </div>
@@ -212,8 +274,8 @@ const Messages = () => {
               {conversations.map((chat) => (
                 <div
                   key={chat.id}
-                  className={`flex cursor-pointer items-center border-b p-4 hover:bg-muted/50 ${
-                    selectedChat === chat.id ? "bg-muted" : ""
+                  className={`flex cursor-pointer items-center border-b p-4 hover:bg-gray-50 ${
+                    selectedChat === chat.id ? "bg-gray-50" : ""
                   }`}
                   onClick={() => setSelectedChat(chat.id)}
                 >
@@ -223,19 +285,19 @@ const Messages = () => {
                       <AvatarFallback>{chat.name.substring(0, 2)}</AvatarFallback>
                     </Avatar>
                     {chat.online && (
-                      <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-medical-success ring-2 ring-white" />
+                      <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-green-500 ring-2 ring-white" />
                     )}
                   </div>
                   <div className="ml-3 flex-1">
                     <div className="flex items-center justify-between">
                       <h3 className="font-medium">{chat.name}</h3>
-                      <span className="text-xs text-muted-foreground">{chat.time}</span>
+                      <span className="text-xs text-gray-500">{chat.time}</span>
                     </div>
-                    <p className="text-sm text-muted-foreground">{chat.role}</p>
+                    <p className="text-sm text-gray-500">{chat.role}</p>
                     <p className="mt-1 truncate text-sm">{chat.lastMessage}</p>
                   </div>
                   {chat.unread > 0 && (
-                    <div className="ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-medical text-xs text-white">
+                    <div className="ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-[#274D60] text-xs text-white">
                       {chat.unread}
                     </div>
                   )}
@@ -258,12 +320,12 @@ const Messages = () => {
                       <AvatarFallback>{selectedConversation.name.substring(0, 2)}</AvatarFallback>
                     </Avatar>
                     {selectedConversation.online && (
-                      <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-medical-success ring-2 ring-white" />
+                      <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-green-500 ring-2 ring-white" />
                     )}
                   </div>
                   <div className="ml-3">
                     <h3 className="font-medium">{selectedConversation.name}</h3>
-                    <p className="text-xs text-muted-foreground">{selectedConversation.role}</p>
+                    <p className="text-xs text-gray-500">{selectedConversation.role}</p>
                   </div>
                 </div>
 
@@ -287,8 +349,8 @@ const Messages = () => {
                         <div
                           className={`max-w-[70%] rounded-lg p-3 ${
                             msg.sender === currentUser.id
-                              ? "bg-medical text-white"
-                              : "bg-muted"
+                              ? "bg-[#274D60] text-white"
+                              : "bg-gray-100"
                           }`}
                         >
                           <p className="text-sm">{msg.text}</p>
@@ -296,7 +358,7 @@ const Messages = () => {
                             className={`mt-1 text-right text-xs ${
                               msg.sender === currentUser.id
                                 ? "text-white/70"
-                                : "text-muted-foreground"
+                                : "text-gray-500"
                             }`}
                           >
                             {msg.time}
@@ -329,7 +391,7 @@ const Messages = () => {
                       className="flex-1"
                     />
                     <Button
-                      className="ml-2 bg-medical hover:bg-medical-dark"
+                      className="ml-2"
                       size="icon"
                       onClick={handleSendMessage}
                       disabled={!message.trim()}
@@ -341,7 +403,7 @@ const Messages = () => {
               </>
             ) : (
               <div className="flex h-full items-center justify-center">
-                <p className="text-muted-foreground">Select a conversation to start messaging</p>
+                <p className="text-gray-500">Select a conversation to start messaging</p>
               </div>
             )}
           </CardContent>
