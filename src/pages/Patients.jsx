@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Search, Plus, Filter } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Button = ({ className = "", variant = "default", size = "default", children, ...props }) => {
   const baseStyles = "inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50";
@@ -81,10 +82,11 @@ const TableCell = ({ className = "", children, ...props }) => (
 );
 
 const Patients = () => {
+  const navigate = useNavigate();
   const [search, setSearch] = useState("");
 
-  // Mock patient data
-  const patients = [
+  // Initial patients data
+  const initialPatients = [
     {
       id: "ZA001",
       name: "Sipho Nkosi",
@@ -114,6 +116,20 @@ const Patients = () => {
     },
   ];
 
+  const [patients, setPatients] = useState([]);
+
+  // Load patients from localStorage on component mount
+  useEffect(() => {
+    const savedPatients = localStorage.getItem('patients');
+    if (savedPatients) {
+      setPatients(JSON.parse(savedPatients));
+    } else {
+      // If no saved patients, use initial data and save it
+      setPatients(initialPatients);
+      localStorage.setItem('patients', JSON.stringify(initialPatients));
+    }
+  }, []);
+
   // Filter patients based on search
   const filteredPatients = search
     ? patients.filter(
@@ -124,6 +140,10 @@ const Patients = () => {
           patient.email.toLowerCase().includes(search.toLowerCase())
       )
     : patients;
+
+  const handleAddPatient = () => {
+    navigate('/patients/add');
+  };
 
   return (
     <div className="animate-fade-in">
@@ -173,7 +193,7 @@ const Patients = () => {
 
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-3xl font-bold">Patients</h1>
-        <Button>
+        <Button onClick={handleAddPatient}>
           <Plus className="mr-2 h-4 w-4" /> Add Patient
         </Button>
       </div>
