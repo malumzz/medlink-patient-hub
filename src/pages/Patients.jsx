@@ -1,17 +1,21 @@
 import React, { useState, useEffect } from "react";
-import { Search, Plus, Filter } from "lucide-react";
+import { Search, Plus, Filter, Edit, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 
 const Button = ({ className = "", variant = "default", size = "default", children, ...props }) => {
   const baseStyles = "inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50";
   const variants = {
     default: "bg-[#274D60] text-white hover:bg-[#1A3A4A]",
     outline: "border border-gray-300 bg-white hover:bg-gray-50 hover:text-gray-900",
+    ghost: "hover:bg-gray-100 hover:text-gray-900",
+    destructive: "bg-red-600 text-white hover:bg-red-700",
   };
   const sizes = {
     default: "h-10 px-4 py-2",
     sm: "h-9 rounded-md px-3",
     lg: "h-11 rounded-md px-8",
+    icon: "h-10 w-10",
   };
   
   return (
@@ -83,7 +87,9 @@ const TableCell = ({ className = "", children, ...props }) => (
 
 const Patients = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [search, setSearch] = useState("");
+  const [editingPatient, setEditingPatient] = useState(null);
 
   // Initial patients data
   const initialPatients = [
@@ -145,6 +151,35 @@ const Patients = () => {
     navigate('/patients/add');
   };
 
+  const handleEditPatient = (patient) => {
+    setEditingPatient(patient);
+  };
+
+  const handleUpdatePatient = (updatedPatient) => {
+    const updatedPatients = patients.map(patient => 
+      patient.id === updatedPatient.id ? updatedPatient : patient
+    );
+    setPatients(updatedPatients);
+    localStorage.setItem('patients', JSON.stringify(updatedPatients));
+    setEditingPatient(null);
+    toast({
+      title: "Patient Updated",
+      description: "The patient information has been successfully updated.",
+    });
+  };
+
+  const handleDeletePatient = (patientId) => {
+    if (window.confirm('Are you sure you want to delete this patient?')) {
+      const updatedPatients = patients.filter(patient => patient.id !== patientId);
+      setPatients(updatedPatients);
+      localStorage.setItem('patients', JSON.stringify(updatedPatients));
+      toast({
+        title: "Patient Deleted",
+        description: "The patient has been successfully deleted.",
+      });
+    }
+  };
+
   return (
     <div className="animate-fade-in">
       <style jsx>{`
@@ -198,6 +233,14 @@ const Patients = () => {
         </Button>
       </div>
 
+      {editingPatient && (
+        <EditPatientModal 
+          patient={editingPatient} 
+          onUpdate={handleUpdatePatient}
+          onCancel={() => setEditingPatient(null)}
+        />
+      )}
+
       <Card>
         <CardContent className="p-6">
           {/* Search and filter bar */}
@@ -228,6 +271,7 @@ const Patients = () => {
                   <TableHead>Contact</TableHead>
                   <TableHead>Email</TableHead>
                   <TableHead>Status</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -252,6 +296,16 @@ const Patients = () => {
                         {patient.status}
                       </span>
                     </TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex justify-end gap-1">
+                        <Button variant="ghost" size="icon" onClick={() => handleEditPatient(patient)}>
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button variant="ghost" size="icon" onClick={() => handleDeletePatient(patient.id)}>
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -259,6 +313,116 @@ const Patients = () => {
           </div>
         </CardContent>
       </Card>
+    </div>
+  );
+};
+
+const EditPatientModal = ({ patient, onUpdate, onCancel }) => {
+  const [formData, setFormData] = useState(patient);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onUpdate(formData);
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
+      <div className="bg-white rounded-lg p-6 w-full max-w-2xl">
+        <h2 className="text-xl font-semibold mb-4">Edit Patient</h2>
+        
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium mb-1">Name</label>
+              <Input
+                name="name"
+                value={formData.name}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Age</label>
+              <Input
+                name="age"
+                type="number"
+                value={formData.age}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium mb-1">Gender</label>
+              <select
+                name="gender"
+                value={formData.gender}
+                onChange={handleInputChange}
+                className="w-full h-10 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#274D60]"
+                required
+              >
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Status</label>
+              <select
+                name="status"
+                value={formData.status}
+                onChange={handleInputChange}
+                className="w-full h-10 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#274D60]"
+                required
+              >
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+                <option value="Pending">Pending</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">Contact</label>
+            <Input
+              name="contact"
+              value={formData.contact}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">Email</label>
+            <Input
+              name="email"
+              type="email"
+              value={formData.email}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+
+          <div className="flex gap-4 pt-4">
+            <Button type="submit" className="flex-1">
+              Update Patient
+            </Button>
+            <Button type="button" variant="outline" onClick={onCancel} className="flex-1">
+              Cancel
+            </Button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };

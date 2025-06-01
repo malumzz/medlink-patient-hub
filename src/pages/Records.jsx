@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { FileText, Download, Share2, Search, Filter, Upload } from "lucide-react";
+import { FileText, Download, Share2, Search, Filter, Upload, Edit, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 
 const Button = ({ className = "", variant = "default", size = "default", children, ...props }) => {
   const baseStyles = "inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50";
@@ -8,6 +9,7 @@ const Button = ({ className = "", variant = "default", size = "default", childre
     default: "bg-[#274D60] text-white hover:bg-[#1A3A4A]",
     outline: "border border-gray-300 bg-white hover:bg-gray-50 hover:text-gray-900",
     ghost: "hover:bg-gray-100 hover:text-gray-900",
+    destructive: "bg-red-600 text-white hover:bg-red-700",
   };
   const sizes = {
     default: "h-10 px-4 py-2",
@@ -95,8 +97,10 @@ const TabsTrigger = ({ value: triggerValue, onValueChange, activeValue, classNam
 
 const Records = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("all");
   const [search, setSearch] = useState("");
+  const [editingRecord, setEditingRecord] = useState(null);
 
   const initialRecords = [
     {
@@ -174,6 +178,35 @@ const Records = () => {
     navigate('/records/add');
   };
 
+  const handleEditRecord = (record) => {
+    setEditingRecord(record);
+  };
+
+  const handleUpdateRecord = (updatedRecord) => {
+    const updatedRecords = records.map(record => 
+      record.id === updatedRecord.id ? updatedRecord : record
+    );
+    setRecords(updatedRecords);
+    localStorage.setItem('records', JSON.stringify(updatedRecords));
+    setEditingRecord(null);
+    toast({
+      title: "Record Updated",
+      description: "The record has been successfully updated.",
+    });
+  };
+
+  const handleDeleteRecord = (recordId) => {
+    if (window.confirm('Are you sure you want to delete this record?')) {
+      const updatedRecords = records.filter(record => record.id !== recordId);
+      setRecords(updatedRecords);
+      localStorage.setItem('records', JSON.stringify(updatedRecords));
+      toast({
+        title: "Record Deleted",
+        description: "The record has been successfully deleted.",
+      });
+    }
+  };
+
   return (
     <div className="animate-fade-in">
       <style jsx>{`
@@ -227,6 +260,14 @@ const Records = () => {
           </TabsList>
         </Tabs>
       </div>
+
+      {editingRecord && (
+        <EditRecordModal 
+          record={editingRecord} 
+          onUpdate={handleUpdateRecord}
+          onCancel={() => setEditingRecord(null)}
+        />
+      )}
 
       <Card>
         <CardHeader className="pb-3">
@@ -282,9 +323,19 @@ const Records = () => {
                       {record.status}
                     </span>
                   </div>
-                  <div className="col-span-1 flex items-center justify-end">
-                    <Button variant="ghost" size="icon"><Download className="h-4 w-4" /></Button>
-                    <Button variant="ghost" size="icon"><Share2 className="h-4 w-4" /></Button>
+                  <div className="col-span-1 flex items-center justify-end gap-1">
+                    <Button variant="ghost" size="icon" onClick={() => handleEditRecord(record)}>
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                    <Button variant="ghost" size="icon" onClick={() => handleDeleteRecord(record.id)}>
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                    <Button variant="ghost" size="icon">
+                      <Download className="h-4 w-4" />
+                    </Button>
+                    <Button variant="ghost" size="icon">
+                      <Share2 className="h-4 w-4" />
+                    </Button>
                   </div>
                 </div>
               ))}
@@ -298,6 +349,137 @@ const Records = () => {
           </div>
         </CardContent>
       </Card>
+    </div>
+  );
+};
+
+const EditRecordModal = ({ record, onUpdate, onCancel }) => {
+  const [formData, setFormData] = useState(record);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onUpdate(formData);
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
+      <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+        <h2 className="text-xl font-semibold mb-4">Edit Record</h2>
+        
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium mb-1">Patient Name</label>
+              <Input
+                name="patientName"
+                value={formData.patientName}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Patient ID</label>
+              <Input
+                name="patientId"
+                value={formData.patientId}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium mb-1">Record Type</label>
+              <select
+                name="recordType"
+                value={formData.recordType}
+                onChange={handleInputChange}
+                className="w-full h-10 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#274D60]"
+                required
+              >
+                <option value="Lab Results">Lab Results</option>
+                <option value="X-Ray">X-Ray</option>
+                <option value="MRI Scan">MRI Scan</option>
+                <option value="Prescription">Prescription</option>
+                <option value="Consultation">Consultation</option>
+                <option value="Surgery">Surgery</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Department</label>
+              <select
+                name="department"
+                value={formData.department}
+                onChange={handleInputChange}
+                className="w-full h-10 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#274D60]"
+                required
+              >
+                <option value="Cardiology">Cardiology</option>
+                <option value="Neurology">Neurology</option>
+                <option value="Orthopedics">Orthopedics</option>
+                <option value="Pediatrics">Pediatrics</option>
+                <option value="General Medicine">General Medicine</option>
+                <option value="Emergency">Emergency</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium mb-1">Doctor</label>
+              <Input
+                name="doctor"
+                value={formData.doctor}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Date</label>
+              <Input
+                name="date"
+                type="date"
+                value={formData.date}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">Status</label>
+            <select
+              name="status"
+              value={formData.status}
+              onChange={handleInputChange}
+              className="w-full h-10 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#274D60]"
+              required
+            >
+              <option value="Completed">Completed</option>
+              <option value="Pending Review">Pending Review</option>
+              <option value="In Progress">In Progress</option>
+            </select>
+          </div>
+
+          <div className="flex gap-4 pt-4">
+            <Button type="submit" className="flex-1">
+              Update Record
+            </Button>
+            <Button type="button" variant="outline" onClick={onCancel} className="flex-1">
+              Cancel
+            </Button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };
