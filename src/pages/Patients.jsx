@@ -2,6 +2,16 @@ import React, { useState, useEffect } from "react";
 import { Search, Plus, Filter, Edit, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 const Button = ({ className = "", variant = "default", size = "default", children, ...props }) => {
   const baseStyles = "inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50";
@@ -90,6 +100,7 @@ const Patients = () => {
   const { toast } = useToast();
   const [search, setSearch] = useState("");
   const [editingPatient, setEditingPatient] = useState(null);
+  const [deletingPatient, setDeletingPatient] = useState(null);
 
   // Initial patients data
   const initialPatients = [
@@ -168,16 +179,19 @@ const Patients = () => {
     });
   };
 
-  const handleDeletePatient = (patientId) => {
-    if (window.confirm('Are you sure you want to delete this patient?')) {
-      const updatedPatients = patients.filter(patient => patient.id !== patientId);
-      setPatients(updatedPatients);
-      localStorage.setItem('patients', JSON.stringify(updatedPatients));
-      toast({
-        title: "Patient Deleted",
-        description: "The patient has been successfully deleted.",
-      });
-    }
+  const handleDeletePatient = (patient) => {
+    setDeletingPatient(patient);
+  };
+
+  const confirmDeletePatient = () => {
+    const updatedPatients = patients.filter(patient => patient.id !== deletingPatient.id);
+    setPatients(updatedPatients);
+    localStorage.setItem('patients', JSON.stringify(updatedPatients));
+    setDeletingPatient(null);
+    toast({
+      title: "Patient Deleted",
+      description: "The patient has been successfully deleted.",
+    });
   };
 
   return (
@@ -240,6 +254,23 @@ const Patients = () => {
           onCancel={() => setEditingPatient(null)}
         />
       )}
+
+      <AlertDialog open={!!deletingPatient} onOpenChange={() => setDeletingPatient(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Patient</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete {deletingPatient?.name}? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDeletePatient} className="bg-red-600 hover:bg-red-700">
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       <Card>
         <CardContent className="p-6">
