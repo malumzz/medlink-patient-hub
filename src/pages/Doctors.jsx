@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Search, Plus } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Button = ({ className = "", variant = "default", size = "default", children, ...props }) => {
   const baseStyles = "inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50";
@@ -43,8 +44,10 @@ const CardContent = ({ className = "", children, ...props }) => (
 );
 
 const Doctors = () => {
-  // South African doctors data
-  const doctors = [
+  const navigate = useNavigate();
+  
+  // Initial doctors data
+  const initialDoctors = [
     {
       id: "DR001",
       name: "Dr. Noni Mokoena",
@@ -74,10 +77,22 @@ const Doctors = () => {
     },
   ];
 
-  // Modal state
+  const [doctors, setDoctors] = useState([]);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+
+  // Load doctors from localStorage on component mount
+  useEffect(() => {
+    const savedDoctors = localStorage.getItem('doctors');
+    if (savedDoctors) {
+      setDoctors(JSON.parse(savedDoctors));
+    } else {
+      // If no saved doctors, use initial data and save it
+      setDoctors(initialDoctors);
+      localStorage.setItem('doctors', JSON.stringify(initialDoctors));
+    }
+  }, []);
 
   const openProfile = (doctor) => {
     setSelectedDoctor(doctor);
@@ -96,6 +111,10 @@ const Doctors = () => {
       doctor.specialty.toLowerCase().includes(term)
     );
   });
+
+  const handleAddDoctor = () => {
+    navigate('/doctors/add');
+  };
 
   return (
     <div className="animate-fade-in">
@@ -121,7 +140,7 @@ const Doctors = () => {
 
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-3xl font-bold">Doctors</h1>
-        <Button>
+        <Button onClick={handleAddDoctor}>
           <Plus className="mr-2 h-4 w-4" /> Add Doctor
         </Button>
       </div>
