@@ -1,17 +1,8 @@
+
 import React, { useState, useEffect } from "react";
 import { UserCheck, Search, Plus, Filter, Edit, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 
 const Button = ({ className = "", variant = "default", size = "default", children, ...props }) => {
   const baseStyles = "inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50";
@@ -80,7 +71,6 @@ const Doctors = () => {
   const { toast } = useToast();
   const [search, setSearch] = useState("");
   const [editingDoctor, setEditingDoctor] = useState(null);
-  const [deletingDoctor, setDeletingDoctor] = useState(null);
 
   const initialDoctors = [
     {
@@ -155,19 +145,16 @@ const Doctors = () => {
     });
   };
 
-  const handleDeleteDoctor = (doctor) => {
-    setDeletingDoctor(doctor);
-  };
-
-  const confirmDeleteDoctor = () => {
-    const updatedDoctors = doctors.filter(doctor => doctor.id !== deletingDoctor.id);
-    setDoctors(updatedDoctors);
-    localStorage.setItem('doctors', JSON.stringify(updatedDoctors));
-    setDeletingDoctor(null);
-    toast({
-      title: "Doctor Deleted",
-      description: "The doctor has been successfully deleted.",
-    });
+  const handleDeleteDoctor = (doctorId) => {
+    if (window.confirm('Are you sure you want to delete this doctor?')) {
+      const updatedDoctors = doctors.filter(doctor => doctor.id !== doctorId);
+      setDoctors(updatedDoctors);
+      localStorage.setItem('doctors', JSON.stringify(updatedDoctors));
+      toast({
+        title: "Doctor Deleted",
+        description: "The doctor has been successfully deleted.",
+      });
+    }
   };
 
   return (
@@ -231,23 +218,6 @@ const Doctors = () => {
         />
       )}
 
-      <AlertDialog open={!!deletingDoctor} onOpenChange={() => setDeletingDoctor(null)}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete Doctor</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to delete {deletingDoctor?.name}? This action cannot be undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmDeleteDoctor} className="bg-red-600 hover:bg-red-700">
-              Delete
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
       <Card>
         <CardHeader className="pb-3">
           <CardTitle>Medical Staff</CardTitle>
@@ -287,7 +257,7 @@ const Doctors = () => {
                       <Button variant="ghost" size="icon" onClick={() => handleEditDoctor(doctor)}>
                         <Edit className="h-4 w-4" />
                       </Button>
-                      <Button variant="ghost" size="icon" onClick={() => handleDeleteDoctor(doctor)}>
+                      <Button variant="ghost" size="icon" onClick={() => handleDeleteDoctor(doctor.id)}>
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>

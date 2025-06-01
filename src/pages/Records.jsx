@@ -2,16 +2,6 @@ import React, { useState, useEffect } from "react";
 import { FileText, Download, Share2, Search, Filter, Upload, Edit, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 
 const Button = ({ className = "", variant = "default", size = "default", children, ...props }) => {
   const baseStyles = "inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50";
@@ -111,7 +101,6 @@ const Records = () => {
   const [activeTab, setActiveTab] = useState("all");
   const [search, setSearch] = useState("");
   const [editingRecord, setEditingRecord] = useState(null);
-  const [deletingRecord, setDeletingRecord] = useState(null);
 
   const initialRecords = [
     {
@@ -206,19 +195,16 @@ const Records = () => {
     });
   };
 
-  const handleDeleteRecord = (record) => {
-    setDeletingRecord(record);
-  };
-
-  const confirmDeleteRecord = () => {
-    const updatedRecords = records.filter(record => record.id !== deletingRecord.id);
-    setRecords(updatedRecords);
-    localStorage.setItem('records', JSON.stringify(updatedRecords));
-    setDeletingRecord(null);
-    toast({
-      title: "Record Deleted",
-      description: "The record has been successfully deleted.",
-    });
+  const handleDeleteRecord = (recordId) => {
+    if (window.confirm('Are you sure you want to delete this record?')) {
+      const updatedRecords = records.filter(record => record.id !== recordId);
+      setRecords(updatedRecords);
+      localStorage.setItem('records', JSON.stringify(updatedRecords));
+      toast({
+        title: "Record Deleted",
+        description: "The record has been successfully deleted.",
+      });
+    }
   };
 
   return (
@@ -283,23 +269,6 @@ const Records = () => {
         />
       )}
 
-      <AlertDialog open={!!deletingRecord} onOpenChange={() => setDeletingRecord(null)}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete Record</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to delete the {deletingRecord?.recordType} record for {deletingRecord?.patientName}? This action cannot be undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmDeleteRecord} className="bg-red-600 hover:bg-red-700">
-              Delete
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
       <Card>
         <CardHeader className="pb-3">
           <CardTitle>Patient Records</CardTitle>
@@ -358,7 +327,7 @@ const Records = () => {
                     <Button variant="ghost" size="icon" onClick={() => handleEditRecord(record)}>
                       <Edit className="h-4 w-4" />
                     </Button>
-                    <Button variant="ghost" size="icon" onClick={() => handleDeleteRecord(record)}>
+                    <Button variant="ghost" size="icon" onClick={() => handleDeleteRecord(record.id)}>
                       <Trash2 className="h-4 w-4" />
                     </Button>
                     <Button variant="ghost" size="icon">
