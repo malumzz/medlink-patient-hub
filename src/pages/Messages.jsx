@@ -1,82 +1,163 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import ConversationSidebar from '../components/ConversationSidebar';
+import ChatConversation from '../components/ChatConversation';
 
 const Messages = () => {
-  const [messages] = useState([
-    {
-      id: 1,
-      sender: 'Dr. Sarah Johnson',
-      subject: 'Patient Follow-up',
-      content: 'Please review the latest test results for patient John Doe.',
-      time: '2 hours ago',
-      read: false
-    },
-    {
-      id: 2,
-      sender: 'Dr. Michael Brown',
-      subject: 'Schedule Update',
-      content: 'My afternoon schedule has been updated. Please check availability.',
-      time: '4 hours ago',
-      read: true
-    },
-    {
-      id: 3,
-      sender: 'Admin',
-      subject: 'System Maintenance',
-      content: 'Scheduled maintenance will occur this weekend from 2-4 AM.',
-      time: '1 day ago',
-      read: true
+  const [conversations, setConversations] = useState([]);
+  const [selectedConversationId, setSelectedConversationId] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  // Initialize conversations with sample data
+  useEffect(() => {
+    const initialConversations = [
+      {
+        id: 1,
+        participant: 'Dr. Sarah Johnson',
+        role: 'Cardiologist',
+        messages: [
+          {
+            id: 1,
+            sender: 'Dr. Sarah Johnson',
+            content: 'Hello! I wanted to follow up on your patient John Doe. His latest test results look concerning.',
+            timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+            read: true
+          },
+          {
+            id: 2,
+            sender: 'You',
+            content: 'Thank you for reaching out. What specific concerns do you have?',
+            timestamp: new Date(Date.now() - 90 * 60 * 1000).toISOString(),
+            read: true
+          },
+          {
+            id: 3,
+            sender: 'Dr. Sarah Johnson',
+            content: 'His cholesterol levels are significantly elevated. I recommend scheduling a consultation this week.',
+            timestamp: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
+            read: false
+          }
+        ]
+      },
+      {
+        id: 2,
+        participant: 'Dr. Michael Brown',
+        role: 'General Practitioner',
+        messages: [
+          {
+            id: 4,
+            sender: 'Dr. Michael Brown',
+            content: 'Hi there! My afternoon schedule has been updated. Could you please check the availability for patient consultations?',
+            timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
+            read: true
+          },
+          {
+            id: 5,
+            sender: 'You',
+            content: 'Sure, I\'ll review the schedule and get back to you shortly.',
+            timestamp: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
+            read: true
+          }
+        ]
+      },
+      {
+        id: 3,
+        participant: 'Admin Team',
+        role: 'System Administrator',
+        messages: [
+          {
+            id: 6,
+            sender: 'Admin Team',
+            content: 'Scheduled maintenance will occur this weekend from 2-4 AM. Please ensure all critical data is backed up.',
+            timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+            read: true
+          }
+        ]
+      },
+      {
+        id: 4,
+        participant: 'Dr. Emily Davis',
+        role: 'Pediatrician',
+        messages: [
+          {
+            id: 7,
+            sender: 'Dr. Emily Davis',
+            content: 'Good morning! I have a question about the new vaccination protocols.',
+            timestamp: new Date(Date.now() - 10 * 60 * 1000).toISOString(),
+            read: false
+          }
+        ]
+      }
+    ];
+
+    // Load from localStorage or use initial data
+    const savedConversations = localStorage.getItem('mpilo_conversations');
+    if (savedConversations) {
+      setConversations(JSON.parse(savedConversations));
+    } else {
+      setConversations(initialConversations);
+      localStorage.setItem('mpilo_conversations', JSON.stringify(initialConversations));
     }
-  ]);
+  }, []);
+
+  // Save conversations to localStorage whenever they change
+  useEffect(() => {
+    if (conversations.length > 0) {
+      localStorage.setItem('mpilo_conversations', JSON.stringify(conversations));
+    }
+  }, [conversations]);
+
+  const handleSelectConversation = (conversationId) => {
+    setSelectedConversationId(conversationId);
+    
+    // Mark messages as read when conversation is opened
+    setConversations(prev => prev.map(conv => {
+      if (conv.id === conversationId) {
+        return {
+          ...conv,
+          messages: conv.messages.map(msg => ({ ...msg, read: true }))
+        };
+      }
+      return conv;
+    }));
+  };
+
+  const handleSendMessage = (conversationId, content) => {
+    const newMessage = {
+      id: Date.now(),
+      sender: 'You',
+      content,
+      timestamp: new Date().toISOString(),
+      read: true
+    };
+
+    setConversations(prev => prev.map(conv => {
+      if (conv.id === conversationId) {
+        return {
+          ...conv,
+          messages: [...conv.messages, newMessage]
+        };
+      }
+      return conv;
+    }));
+  };
+
+  const selectedConversation = conversations.find(conv => conv.id === selectedConversationId);
 
   return (
-    <div className="animate-fade-in">
-      <style jsx>{`
-        .animate-fade-in {
-          animation: fade-in 0.3s ease-in-out;
-        }
-        
-        @keyframes fade-in {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-      `}</style>
-
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold">Messages</h1>
-        <p className="text-gray-600 mt-2">Stay connected with your medical team</p>
-      </div>
-
-      <div className="space-y-4">
-        {messages.map((message) => (
-          <div
-            key={message.id}
-            className={`rounded-lg border bg-white p-6 shadow-sm transition-colors hover:bg-gray-50 ${
-              !message.read ? 'border-l-4 border-l-blue-500' : ''
-            }`}
-          >
-            <div className="flex items-start justify-between">
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-2">
-                  <h3 className={`font-semibold ${!message.read ? 'text-gray-900' : 'text-gray-700'}`}>
-                    {message.sender}
-                  </h3>
-                  {!message.read && (
-                    <span className="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800">
-                      New
-                    </span>
-                  )}
-                </div>
-                <h4 className={`font-medium mb-2 ${!message.read ? 'text-gray-900' : 'text-gray-600'}`}>
-                  {message.subject}
-                </h4>
-                <p className="text-gray-600 mb-3">{message.content}</p>
-                <p className="text-sm text-gray-500">{message.time}</p>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
+    <div className="flex h-[calc(100vh-2rem)] bg-gray-50 rounded-lg overflow-hidden">
+      <ConversationSidebar
+        conversations={conversations}
+        selectedConversationId={selectedConversationId}
+        onSelectConversation={handleSelectConversation}
+        searchTerm={searchTerm}
+        onSearchChange={setSearchTerm}
+      />
+      <ChatConversation
+        conversation={selectedConversation}
+        onSendMessage={handleSendMessage}
+        currentUser="You"
+      />
     </div>
   );
 };
