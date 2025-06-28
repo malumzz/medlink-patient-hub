@@ -40,23 +40,22 @@ const Sidebar = ({ isOpen, onClose }) => {
 
   return (
     <>
-      {/* Mobile Overlay */}
+      {/* Overlay for mobile and desktop when sidebar is open */}
       {isOpen && (
         <div 
-          className="fixed inset-0 z-40 bg-black bg-opacity-50 md:hidden"
+          className="fixed inset-0 z-40 bg-black bg-opacity-50"
           onClick={onClose}
         />
       )}
       
       {/* Sidebar */}
       <div className={`
-        fixed md:static inset-y-0 left-0 z-50 flex h-screen w-64 flex-col bg-white border-r
+        fixed inset-y-0 left-0 z-50 flex h-screen w-64 flex-col bg-white border-r
         transform transition-transform duration-300 ease-in-out
         ${isOpen ? 'translate-x-0' : '-translate-x-full'}
-        md:translate-x-0
       `}>
-        {/* Mobile Close Button */}
-        <div className="flex items-center justify-between px-4 py-5 md:justify-start">
+        {/* Header with Close Button */}
+        <div className="flex items-center justify-between px-4 py-5">
           <div className="flex items-center">
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#274D60]">
               <span className="text-lg font-bold text-white">M</span>
@@ -67,7 +66,7 @@ const Sidebar = ({ isOpen, onClose }) => {
             variant="ghost"
             size="sm"
             onClick={onClose}
-            className="md:hidden p-2"
+            className="p-2"
           >
             <X size={20} />
           </Button>
