@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import ConversationSidebar from '../components/ConversationSidebar';
 import ChatConversation from '../components/ChatConversation';
@@ -7,6 +6,7 @@ const Messages = () => {
   const [conversations, setConversations] = useState([]);
   const [selectedConversationId, setSelectedConversationId] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [showSidebar, setShowSidebar] = useState(true);
 
   // Initialize conversations with sample data
   useEffect(() => {
@@ -109,8 +109,8 @@ const Messages = () => {
 
   const handleSelectConversation = (conversationId) => {
     setSelectedConversationId(conversationId);
+    setShowSidebar(false); // Hide sidebar on mobile when conversation is selected
     
-    // Mark messages as read when conversation is opened
     setConversations(prev => prev.map(conv => {
       if (conv.id === conversationId) {
         return {
@@ -145,19 +145,24 @@ const Messages = () => {
   const selectedConversation = conversations.find(conv => conv.id === selectedConversationId);
 
   return (
-    <div className="flex h-[calc(100vh-2rem)] bg-gray-50 rounded-lg overflow-hidden">
-      <ConversationSidebar
-        conversations={conversations}
-        selectedConversationId={selectedConversationId}
-        onSelectConversation={handleSelectConversation}
-        searchTerm={searchTerm}
-        onSearchChange={setSearchTerm}
-      />
-      <ChatConversation
-        conversation={selectedConversation}
-        onSendMessage={handleSendMessage}
-        currentUser="You"
-      />
+    <div className="flex h-[calc(100vh-6rem)] md:h-[calc(100vh-2rem)] bg-gray-50 rounded-lg overflow-hidden">
+      <div className={`${showSidebar || !selectedConversation ? 'flex' : 'hidden'} md:flex`}>
+        <ConversationSidebar
+          conversations={conversations}
+          selectedConversationId={selectedConversationId}
+          onSelectConversation={handleSelectConversation}
+          searchTerm={searchTerm}
+          onSearchChange={setSearchTerm}
+        />
+      </div>
+      <div className={`${!showSidebar || selectedConversation ? 'flex' : 'hidden'} md:flex flex-1`}>
+        <ChatConversation
+          conversation={selectedConversation}
+          onSendMessage={handleSendMessage}
+          currentUser="You"
+          onBackClick={() => setShowSidebar(true)}
+        />
+      </div>
     </div>
   );
 };

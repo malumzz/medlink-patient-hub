@@ -8,19 +8,19 @@ const Card = ({ className = "", children, ...props }) => (
 );
 
 const CardContent = ({ className = "", children, ...props }) => (
-  <div className={`p-6 ${className}`} {...props}>
+  <div className={`p-4 md:p-6 ${className}`} {...props}>
     {children}
   </div>
 );
 
 const CardHeader = ({ className = "", children, ...props }) => (
-  <div className={`flex flex-col space-y-1.5 p-6 ${className}`} {...props}>
+  <div className={`flex flex-col space-y-1.5 p-4 md:p-6 ${className}`} {...props}>
     {children}
   </div>
 );
 
 const CardTitle = ({ className = "", children, ...props }) => (
-  <h3 className={`text-2xl font-semibold leading-none tracking-tight ${className}`} {...props}>
+  <h3 className={`text-lg md:text-2xl font-semibold leading-none tracking-tight ${className}`} {...props}>
     {children}
   </h3>
 );
@@ -32,7 +32,7 @@ const CardDescription = ({ className = "", children, ...props }) => (
 );
 
 const Progress = ({ value = 0, className = "", indicatorClassName = "" }) => (
-  <div className={`relative h-4 w-full overflow-hidden rounded-full bg-gray-200 ${className}`}>
+  <div className={`relative h-3 md:h-4 w-full overflow-hidden rounded-full bg-gray-200 ${className}`}>
     <div 
       className={`h-full w-full flex-1 bg-[#274D60] transition-all ${indicatorClassName}`}
       style={{ transform: `translateX(-${100 - value}%)` }}
@@ -141,7 +141,7 @@ const Dashboard = () => {
   ];
 
   return (
-    <div className="animate-fade-in">
+    <div className="animate-fade-in max-w-7xl">
       <style jsx>{`
         .animate-fade-in {
           animation: fade-in 0.3s ease-in-out;
@@ -162,20 +162,20 @@ const Dashboard = () => {
         }
       `}</style>
 
-      <h1 className="mb-6 text-3xl font-bold">Dashboard</h1>
+      <h1 className="mb-4 md:mb-6 text-2xl md:text-3xl font-bold">Dashboard</h1>
       
       {/* Stats Section */}
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 md:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
         {stats.map((stat, index) => (
           <Card key={index} className="card-hover">
-            <CardContent className="p-6">
+            <CardContent className="p-4 md:p-6">
               <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-500">{stat.title}</p>
-                  <h3 className="mt-1 text-2xl font-bold">{stat.value}</h3>
+                <div className="min-w-0">
+                  <p className="text-xs md:text-sm font-medium text-gray-500 truncate">{stat.title}</p>
+                  <h3 className="mt-1 text-xl md:text-2xl font-bold">{stat.value}</h3>
                 </div>
-                <div className="rounded-full bg-[#274D60]/10 p-2 text-[#274D60]">
-                  <stat.icon size={20} />
+                <div className="rounded-full bg-[#274D60]/10 p-2 text-[#274D60] flex-shrink-0">
+                  <stat.icon size={16} className="md:w-5 md:h-5" />
                 </div>
               </div>
               <div className="mt-3 flex items-center text-xs">
@@ -187,33 +187,33 @@ const Dashboard = () => {
                 <span className={stat.trend === "up" ? "text-green-600" : "text-red-600"}>
                   {stat.change}
                 </span>
-                <span className="ml-1 text-gray-500">from last month</span>
+                <span className="ml-1 text-gray-500 hidden sm:inline">from last month</span>
               </div>
             </CardContent>
           </Card>
         ))}
       </div>
 
-      <div className="mt-6 grid gap-6 lg:grid-cols-2">
+      <div className="mt-4 md:mt-6 grid gap-4 md:gap-6 grid-cols-1 lg:grid-cols-2">
         {/* Department Workload */}
         <Card className="card-hover">
           <CardHeader>
-            <CardTitle className="flex items-center">
-              <Activity className="mr-2 h-5 w-5" />
+            <CardTitle className="flex items-center text-base md:text-lg">
+              <Activity className="mr-2 h-4 w-4 md:h-5 md:w-5" />
               Department Workload
             </CardTitle>
-            <CardDescription>Current patient distribution across departments</CardDescription>
+            <CardDescription className="text-xs md:text-sm">Current patient distribution across departments</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
+            <div className="space-y-3 md:space-y-4">
               {departmentWorkload.map((dept, index) => {
                 const percentage = Math.round((dept.patients / dept.capacity) * 100);
                 return (
                   <div key={index}>
                     <div className="mb-1 flex items-center justify-between">
-                      <span className="text-sm font-medium">{dept.department}</span>
-                      <span className="text-sm text-gray-500">
-                        {dept.patients}/{dept.capacity} patients ({percentage}%)
+                      <span className="text-xs md:text-sm font-medium truncate">{dept.department}</span>
+                      <span className="text-xs text-gray-500 ml-2 flex-shrink-0">
+                        {dept.patients}/{dept.capacity} ({percentage}%)
                       </span>
                     </div>
                     <Progress
@@ -233,24 +233,24 @@ const Dashboard = () => {
         {/* Upcoming Appointments */}
         <Card className="card-hover">
           <CardHeader>
-            <CardTitle className="flex items-center">
-              <Calendar className="mr-2 h-5 w-5" />
+            <CardTitle className="flex items-center text-base md:text-lg">
+              <Calendar className="mr-2 h-4 w-4 md:h-5 md:w-5" />
               Upcoming Appointments
             </CardTitle>
-            <CardDescription>Today's scheduled appointments</CardDescription>
+            <CardDescription className="text-xs md:text-sm">Today's scheduled appointments</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
+            <div className="space-y-3 md:space-y-4">
               {upcomingAppointments.map((appointment, index) => (
                 <div key={index} className="flex items-center justify-between border-b pb-3 last:border-0">
-                  <div>
-                    <p className="font-medium">{appointment.patient}</p>
-                    <p className="text-sm text-gray-500">
+                  <div className="min-w-0 flex-1">
+                    <p className="font-medium text-sm md:text-base truncate">{appointment.patient}</p>
+                    <p className="text-xs md:text-sm text-gray-500">
                       {appointment.time} - {appointment.type}
                     </p>
                   </div>
-                  <div className="text-right">
-                    <p className="text-sm">{appointment.doctor}</p>
+                  <div className="text-right ml-2 flex-shrink-0">
+                    <p className="text-xs md:text-sm truncate">{appointment.doctor}</p>
                     <p
                       className={`text-xs ${
                         appointment.status === "Confirmed"
@@ -269,24 +269,24 @@ const Dashboard = () => {
       </div>
 
       {/* Recent Activity */}
-      <Card className="mt-6 card-hover">
+      <Card className="mt-4 md:mt-6 card-hover">
         <CardHeader>
-          <CardTitle>Recent Activity</CardTitle>
-          <CardDescription>Latest updates from your medical facility</CardDescription>
+          <CardTitle className="text-base md:text-lg">Recent Activity</CardTitle>
+          <CardDescription className="text-xs md:text-sm">Latest updates from your medical facility</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
+          <div className="space-y-3 md:space-y-4">
             {recentActivity.map((activity, index) => (
-              <div key={index} className="flex items-center border-b pb-3 last:border-0">
-                <div className="mr-4 h-2 w-2 rounded-full bg-[#274D60]" />
-                <div>
-                  <p className="text-sm">
+              <div key={index} className="flex items-start border-b pb-3 last:border-0">
+                <div className="mr-3 mt-2 h-2 w-2 rounded-full bg-[#274D60] flex-shrink-0" />
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs md:text-sm">
                     <span className="font-medium">{activity.patient}</span> - {activity.action}
                   </p>
-                  <div className="mt-1 flex text-xs text-gray-500">
-                    <span>{activity.doctor}</span>
-                    <span className="mx-2">•</span>
-                    <span>{activity.time}</span>
+                  <div className="mt-1 flex flex-col sm:flex-row text-xs text-gray-500">
+                    <span className="truncate">{activity.doctor}</span>
+                    <span className="hidden sm:inline mx-2">•</span>
+                    <span className="flex-shrink-0">{activity.time}</span>
                   </div>
                 </div>
               </div>
