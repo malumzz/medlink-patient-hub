@@ -33,12 +33,14 @@ const App = () => {
             <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
             
             {/* Main Content */}
-            <div className="flex-1 flex flex-col overflow-hidden">
+            <div className={`flex-1 flex flex-col overflow-hidden transition-all duration-300 ${
+              sidebarOpen ? 'ml-0' : 'ml-0'
+            }`}>
               {/* Top Bar */}
               <TopBar onMenuClick={() => setSidebarOpen(!sidebarOpen)} />
               
               {/* Page Content */}
-              <main className="flex-1 overflow-auto p-4 md:p-6">
+              <main className="flex-1 overflow-auto p-4 md:p-6 w-full">
                 <Routes>
                   <Route path="/" element={<Dashboard />} />
                   <Route path="/patients" element={<Patients />} />

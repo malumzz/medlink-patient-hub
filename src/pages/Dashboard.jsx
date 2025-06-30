@@ -142,7 +142,7 @@ const Dashboard = () => {
   ];
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="w-full h-full">
       <style jsx>{`
         .animate-fade-in {
           animation: fade-in 0.3s ease-in-out;
@@ -163,7 +163,7 @@ const Dashboard = () => {
         }
       `}</style>
 
-      <div className="animate-fade-in">
+      <div className="animate-fade-in w-full">
         <h1 className="mb-4 md:mb-6 text-2xl md:text-3xl font-bold">Dashboard</h1>
         
         {/* Stats Section */}
