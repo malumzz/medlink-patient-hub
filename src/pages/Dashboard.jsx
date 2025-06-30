@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Users, Calendar, FileText, Activity, ArrowUp, ArrowDown } from "lucide-react";
 
@@ -141,7 +142,7 @@ const Dashboard = () => {
   ];
 
   return (
-    <div className="animate-fade-in max-w-7xl">
+    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <style jsx>{`
         .animate-fade-in {
           animation: fade-in 0.3s ease-in-out;
@@ -162,104 +163,133 @@ const Dashboard = () => {
         }
       `}</style>
 
-      <h1 className="mb-4 md:mb-6 text-2xl md:text-3xl font-bold">Dashboard</h1>
-      
-      {/* Stats Section */}
-      <div className="grid gap-4 md:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-        {stats.map((stat, index) => (
-          <Card key={index} className="card-hover">
-            <CardContent className="p-4 md:p-6">
-              <div className="flex items-center justify-between">
-                <div className="min-w-0">
-                  <p className="text-xs md:text-sm font-medium text-gray-500 truncate">{stat.title}</p>
-                  <h3 className="mt-1 text-xl md:text-2xl font-bold">{stat.value}</h3>
+      <div className="animate-fade-in">
+        <h1 className="mb-4 md:mb-6 text-2xl md:text-3xl font-bold">Dashboard</h1>
+        
+        {/* Stats Section */}
+        <div className="grid gap-4 md:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 mb-6">
+          {stats.map((stat, index) => (
+            <Card key={index} className="card-hover">
+              <CardContent className="p-4 md:p-6">
+                <div className="flex items-center justify-between">
+                  <div className="min-w-0">
+                    <p className="text-xs md:text-sm font-medium text-gray-500 truncate">{stat.title}</p>
+                    <h3 className="mt-1 text-xl md:text-2xl font-bold">{stat.value}</h3>
+                  </div>
+                  <div className="rounded-full bg-[#274D60]/10 p-2 text-[#274D60] flex-shrink-0">
+                    <stat.icon size={16} className="md:w-5 md:h-5" />
+                  </div>
                 </div>
-                <div className="rounded-full bg-[#274D60]/10 p-2 text-[#274D60] flex-shrink-0">
-                  <stat.icon size={16} className="md:w-5 md:h-5" />
+                <div className="mt-3 flex items-center text-xs">
+                  {stat.trend === "up" ? (
+                    <ArrowUp className="mr-1 h-3 w-3 text-green-600" />
+                  ) : (
+                    <ArrowDown className="mr-1 h-3 w-3 text-red-600" />
+                  )}
+                  <span className={stat.trend === "up" ? "text-green-600" : "text-red-600"}>
+                    {stat.change}
+                  </span>
+                  <span className="ml-1 text-gray-500 hidden sm:inline">from last month</span>
                 </div>
-              </div>
-              <div className="mt-3 flex items-center text-xs">
-                {stat.trend === "up" ? (
-                  <ArrowUp className="mr-1 h-3 w-3 text-green-600" />
-                ) : (
-                  <ArrowDown className="mr-1 h-3 w-3 text-red-600" />
-                )}
-                <span className={stat.trend === "up" ? "text-green-600" : "text-red-600"}>
-                  {stat.change}
-                </span>
-                <span className="ml-1 text-gray-500 hidden sm:inline">from last month</span>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        <div className="grid gap-4 md:gap-6 grid-cols-1 lg:grid-cols-2 mb-6">
+          {/* Department Workload */}
+          <Card className="card-hover">
+            <CardHeader>
+              <CardTitle className="flex items-center text-base md:text-lg">
+                <Activity className="mr-2 h-4 w-4 md:h-5 md:w-5" />
+                Department Workload
+              </CardTitle>
+              <CardDescription className="text-xs md:text-sm">Current patient distribution across departments</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3 md:space-y-4">
+                {departmentWorkload.map((dept, index) => {
+                  const percentage = Math.round((dept.patients / dept.capacity) * 100);
+                  return (
+                    <div key={index}>
+                      <div className="mb-1 flex items-center justify-between">
+                        <span className="text-xs md:text-sm font-medium truncate">{dept.department}</span>
+                        <span className="text-xs text-gray-500 ml-2 flex-shrink-0">
+                          {dept.patients}/{dept.capacity} ({percentage}%)
+                        </span>
+                      </div>
+                      <Progress
+                        value={percentage}
+                        className={`h-2 ${
+                          percentage > 80 ? "bg-red-200" : "bg-gray-200"
+                        }`}
+                        indicatorClassName={percentage > 80 ? "bg-red-600" : "bg-[#274D60]"}
+                      />
+                    </div>
+                  );
+                })}
               </div>
             </CardContent>
           </Card>
-        ))}
-      </div>
 
-      <div className="mt-4 md:mt-6 grid gap-4 md:gap-6 grid-cols-1 lg:grid-cols-2">
-        {/* Department Workload */}
-        <Card className="card-hover">
-          <CardHeader>
-            <CardTitle className="flex items-center text-base md:text-lg">
-              <Activity className="mr-2 h-4 w-4 md:h-5 md:w-5" />
-              Department Workload
-            </CardTitle>
-            <CardDescription className="text-xs md:text-sm">Current patient distribution across departments</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3 md:space-y-4">
-              {departmentWorkload.map((dept, index) => {
-                const percentage = Math.round((dept.patients / dept.capacity) * 100);
-                return (
-                  <div key={index}>
-                    <div className="mb-1 flex items-center justify-between">
-                      <span className="text-xs md:text-sm font-medium truncate">{dept.department}</span>
-                      <span className="text-xs text-gray-500 ml-2 flex-shrink-0">
-                        {dept.patients}/{dept.capacity} ({percentage}%)
-                      </span>
+          {/* Upcoming Appointments */}
+          <Card className="card-hover">
+            <CardHeader>
+              <CardTitle className="flex items-center text-base md:text-lg">
+                <Calendar className="mr-2 h-4 w-4 md:h-5 md:w-5" />
+                Upcoming Appointments
+              </CardTitle>
+              <CardDescription className="text-xs md:text-sm">Today's scheduled appointments</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3 md:space-y-4">
+                {upcomingAppointments.map((appointment, index) => (
+                  <div key={index} className="flex items-center justify-between border-b pb-3 last:border-0">
+                    <div className="min-w-0 flex-1">
+                      <p className="font-medium text-sm md:text-base truncate">{appointment.patient}</p>
+                      <p className="text-xs md:text-sm text-gray-500">
+                        {appointment.time} - {appointment.type}
+                      </p>
                     </div>
-                    <Progress
-                      value={percentage}
-                      className={`h-2 ${
-                        percentage > 80 ? "bg-red-200" : "bg-gray-200"
-                      }`}
-                      indicatorClassName={percentage > 80 ? "bg-red-600" : "bg-[#274D60]"}
-                    />
+                    <div className="text-right ml-2 flex-shrink-0">
+                      <p className="text-xs md:text-sm truncate">{appointment.doctor}</p>
+                      <p
+                        className={`text-xs ${
+                          appointment.status === "Confirmed"
+                            ? "text-green-600"
+                            : "text-yellow-600"
+                        }`}
+                      >
+                        {appointment.status}
+                      </p>
+                    </div>
                   </div>
-                );
-              })}
-            </div>
-          </CardContent>
-        </Card>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
 
-        {/* Upcoming Appointments */}
+        {/* Recent Activity */}
         <Card className="card-hover">
           <CardHeader>
-            <CardTitle className="flex items-center text-base md:text-lg">
-              <Calendar className="mr-2 h-4 w-4 md:h-5 md:w-5" />
-              Upcoming Appointments
-            </CardTitle>
-            <CardDescription className="text-xs md:text-sm">Today's scheduled appointments</CardDescription>
+            <CardTitle className="text-base md:text-lg">Recent Activity</CardTitle>
+            <CardDescription className="text-xs md:text-sm">Latest updates from your medical facility</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-3 md:space-y-4">
-              {upcomingAppointments.map((appointment, index) => (
-                <div key={index} className="flex items-center justify-between border-b pb-3 last:border-0">
+              {recentActivity.map((activity, index) => (
+                <div key={index} className="flex items-start border-b pb-3 last:border-0">
+                  <div className="mr-3 mt-2 h-2 w-2 rounded-full bg-[#274D60] flex-shrink-0" />
                   <div className="min-w-0 flex-1">
-                    <p className="font-medium text-sm md:text-base truncate">{appointment.patient}</p>
-                    <p className="text-xs md:text-sm text-gray-500">
-                      {appointment.time} - {appointment.type}
+                    <p className="text-xs md:text-sm">
+                      <span className="font-medium">{activity.patient}</span> - {activity.action}
                     </p>
-                  </div>
-                  <div className="text-right ml-2 flex-shrink-0">
-                    <p className="text-xs md:text-sm truncate">{appointment.doctor}</p>
-                    <p
-                      className={`text-xs ${
-                        appointment.status === "Confirmed"
-                          ? "text-green-600"
-                          : "text-yellow-600"
-                      }`}
-                    >
-                      {appointment.status}
-                    </p>
+                    <div className="mt-1 flex flex-col sm:flex-row text-xs text-gray-500">
+                      <span className="truncate">{activity.doctor}</span>
+                      <span className="hidden sm:inline mx-2">•</span>
+                      <span className="flex-shrink-0">{activity.time}</span>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -267,33 +297,6 @@ const Dashboard = () => {
           </CardContent>
         </Card>
       </div>
-
-      {/* Recent Activity */}
-      <Card className="mt-4 md:mt-6 card-hover">
-        <CardHeader>
-          <CardTitle className="text-base md:text-lg">Recent Activity</CardTitle>
-          <CardDescription className="text-xs md:text-sm">Latest updates from your medical facility</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-3 md:space-y-4">
-            {recentActivity.map((activity, index) => (
-              <div key={index} className="flex items-start border-b pb-3 last:border-0">
-                <div className="mr-3 mt-2 h-2 w-2 rounded-full bg-[#274D60] flex-shrink-0" />
-                <div className="min-w-0 flex-1">
-                  <p className="text-xs md:text-sm">
-                    <span className="font-medium">{activity.patient}</span> - {activity.action}
-                  </p>
-                  <div className="mt-1 flex flex-col sm:flex-row text-xs text-gray-500">
-                    <span className="truncate">{activity.doctor}</span>
-                    <span className="hidden sm:inline mx-2">•</span>
-                    <span className="flex-shrink-0">{activity.time}</span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 };
